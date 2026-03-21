@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STANZIN V6 - HALF BLUR EDITION</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.9.3/dist/dotlottie-wc.js" type="module"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: #e0e5ec; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; color: #444; }
+        
+        .main-container { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 20px; align-items: center; }
+
+        .grid-box { 
+            background: #e0e5ec; padding: 20px; border-radius: 25px; 
+            box-shadow: 10px 10px 20px #b8bec9, -10px -10px 20px #ffffff;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%;
+        }
+        
+        .item-btn {
+            background: #e0e5ec; padding: 15px 10px; border-radius: 15px;
+            box-shadow: 4px 4px 8px #b8bec9, -4px -4px 8px #ffffff;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 5px; font-size: 0.8rem; font-weight: 900;
+            border: 1px solid rgba(255,255,255,0.4); color: #555; cursor: pointer;
+        }
+
+        .label-text { font-size: 0.55rem; color: #888; text-transform: uppercase; font-weight: 800; }
+        .val-text { color: #6c5ce7; font-size: 0.7rem; text-align: center; }
+
+        .login-btn { background: #6c5ce7; color: #fff !important; border: none; box-shadow: 4px 4px 10px rgba(108, 92, 231, 0.3); }
+        .start-btn { 
+            background: linear-gradient(135deg, #a29bfe, #6c5ce7); 
+            color: #fff; flex-direction: row; justify-content: center; 
+            grid-column: span 2; border: none; height: 52px; font-size: 0.9rem; border-radius: 15px; margin-top: 5px; 
+        }
+
+        /* TIMER BOX WITH HALF-CUT GLASS BLUR */
+        .glass-timer {
+            grid-column: span 2; position: relative; 
+            background: #e0e5ec; border-radius: 20px; padding: 30px 20px; 
+            text-align: center; overflow: hidden;
+            box-shadow: inset 6px 6px 12px #b8bec9, inset -6px -6px 12px #ffffff;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            min-height: 130px;
+        }
+
+        /* TIMER DIGITS (Layer below glass) */
+        .timer-val { 
+            font-size: 3.2rem; font-weight: 900; color: #6c5ce7; 
+            position: relative; z-index: 1; letter-spacing: 1px;
+        }
+
+        /* BOTTOM GLASS OVERLAY (Layer above digits) */
+        .glass-timer::after {
+            content: ""; position: absolute; 
+            bottom: 0; left: 0; width: 100%; height: 50%; /* Digits ke beech tak */
+            background: rgba(255, 255, 255, 0.25); 
+            backdrop-filter: blur(12px); /* Isse digits bottom se blur dikhenge */
+            -webkit-backdrop-filter: blur(12px);
+            border-top: 1.5px solid rgba(255, 255, 255, 0.5); /* Glass cut line */
+            z-index: 10; pointer-events: none;
+            border-radius: 0 0 20px 20px;
+        }
+
+        .timer-label-top { 
+            position: relative; z-index: 11; font-size: 0.6rem; 
+            color: #6c5ce7; font-weight: 900; margin-bottom: 5px; 
+        }
+
+        .input-key { border: none; background: transparent; width: 100%; outline: none; font-weight: 900; color: #6c5ce7; font-size: 0.75rem; text-align: center; }
+        .dev-img { width: 100%; max-width: 220px; filter: drop-shadow(8px 8px 12px #b8bec9); }
+    </style>
+</head>
+<body>
+
+<div class="main-container">
+    <dotlottie-wc src="https://lottie.host/f16e0f02-28cf-4a6e-97c3-f2d9db69b089/8Hyd2JGMzt.lottie" style="width: 180px; height: 180px" autoplay loop></dotlottie-wc>
+
+    <div class="grid-box" id="ui-box"></div>
+
+    <img src="https://cdni.iconscout.com/illustration/premium/thumb/web-development-3454628-2918517.png" class="dev-img">
+</div>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyDGF0GEonMgT8HjIqZux4IpkpjUjTwCl6k",
+        authDomain: "the-kargil-rock.firebaseapp.com",
+        databaseURL: "https://the-kargil-rock-default-rtdb.firebaseio.com",
+        projectId: "the-kargil-rock",
+        storageBucket: "the-kargil-rock.firebasestorage.app",
+        messagingSenderId: "137725131934",
+        appId: "1:137725131934:web:43baf72100c62fb0044f8f"
+    };
+
+    if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+    const database = firebase.database();
+
+    function getDeviceID() {
+        let id = localStorage.getItem('stanzin_id') || 'STZ-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+        localStorage.setItem('stanzin_id', id);
+        return id;
+    }
+
+    async function init() {
+        const devID = getDeviceID();
+        const savedKey = localStorage.getItem('stanzin_saved_key') || "";
+        showLoginPage(devID, savedKey);
+
+        if (savedKey) {
+            database.ref('keys/' + savedKey).once('value', (snap) => {
+                const data = snap.val();
+                if (data && data.status === "ON" && (data.deviceID === "" || data.deviceID === devID) && Date.now() < data.expiry) {
+                    showStatusPage(savedKey, devID, data.expiry);
+                }
+            });
+        }
+    }
+
+    function showLoginPage(id, key) {
+        document.getElementById('ui-box').innerHTML = `
+            <div class="item-btn"><span class="label-text">Device ID</span><span class="val-text">${id}</span></div>
+            <div class="item-btn"><span class="label-text">Enter Key</span><input type="text" id="user-key" class="input-key" value="${key}"></div>
+            <a href="https://t.me/madarabhai98" target="_blank" class="item-btn" style="text-decoration:none;"><i class="fas fa-headset" style="color:#e74c3c"></i><span class="val-text">SUPPORT</span></a>
+            <div class="item-btn login-btn" onclick="handleLogin()" id="lgnBtn"><i class="fas fa-sign-in-alt"></i><span class="val-text" style="color:white;">LOGIN</span></div>
+        `;
+    }
+
+    async function handleLogin() {
+        const key = document.getElementById('user-key').value.trim();
+        const devID = getDeviceID();
+        if(!key) return;
+        const btn = document.getElementById('lgnBtn');
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        
+        try {
+            const snap = await database.ref('keys/' + key).once('value');
+            const data = snap.val();
+            if(data && data.status === "ON" && (data.deviceID === "" || data.deviceID === devID) && Date.now() < data.expiry) {
+                if(data.deviceID === "") await database.ref('keys/' + key).update({deviceID: devID});
+                localStorage.setItem('stanzin_saved_key', key);
+                showStatusPage(key, devID, data.expiry);
+            } else { alert("Key Issue!"); btn.innerHTML = 'LOGIN'; }
+        } catch(e) { alert("Error!"); btn.innerHTML = 'LOGIN'; }
+    }
+
+    function showStatusPage(key, id, expiry) {
+        document.getElementById('ui-box').innerHTML = `
+            <div class="glass-timer">
+                <span class="timer-label-top">TIME REMAINING</span>
+                <div class="timer-val" id="timer">00:00:00</div>
+            </div>
+            <div class="item-btn"><span class="label-text">Key</span><span class="val-text">${key}</span></div>
+            <div class="item-btn"><span class="label-text">Device</span><span class="val-text">${id}</span></div>
+            <button class="item-btn start-btn" onclick="window.location.href='dashboard.html'"><i class="fas fa-bolt"></i>&nbsp; START MOD</button>
+        `;
+        startTimer(expiry);
+    }
+
+    function startTimer(expiry) {
+        setInterval(() => {
+            const diff = expiry - Date.now();
+            const el = document.getElementById('timer');
+            if(!el) return;
+            if(diff <= 0) { el.innerText = "EXPIRED"; return; }
+            const h = Math.floor(diff/3600000).toString().padStart(2,'0');
+            const m = Math.floor((diff%3600000)/60000).toString().padStart(2,'0');
+            const s = Math.floor((diff%60000)/1000).toString().padStart(2,'0');
+            el.innerText = `${h}:${m}:${s}`;
+        }, 1000);
+    }
+    window.onload = init;
+</script>
+</body>
+</html>
