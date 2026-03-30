@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>STANZIN V2 PRO - FX BEAST</title>
+    <title>STANZIN V2 PRO - ADX BEAST v3.0</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
@@ -40,6 +40,7 @@
             position: relative; overflow: hidden;
         }
 
+        /* Original Timer Design Restore */
         .timer-card { min-height: 180px; display: flex; flex-direction: column; justify-content: center; align-items: center; }
         .timer-container { position: relative; display: inline-block; margin-top: 15px; }
         .timer-val { font-size: 4.5rem; font-weight: 900; color: #6c5ce7; line-height: 1; letter-spacing: -2px; }
@@ -63,12 +64,11 @@
         .trend-chart { display: flex; gap: 15px; overflow-x: auto; padding: 10px 0; scrollbar-width: none; }
         .trend-no { font-size: 1.8rem; font-weight: 900; min-width: 40px; text-align: center; }
 
-        .history-card { text-align: left; height: auto; }
         table { width: 100%; border-collapse: collapse; }
         td { padding: 15px 5px; font-size: 0.85rem; font-weight: 900; text-align: center; border-bottom: 1px solid #ced4da; }
         
-        .copy-btn { color: #6c5ce7; cursor: pointer; font-size: 1.2rem; padding: 10px; transition: 0.2s; }
-        .copy-btn:active { transform: scale(0.7); color: #2ecc71; }
+        .copy-btn-box { display: inline-block; padding: 12px; cursor: pointer; color: #6c5ce7; transition: 0.2s; }
+        .copy-btn-box:active { transform: scale(1.3); color: #2ecc71; }
 
         .txt-green { color: #2ecc71 !important; }
         .txt-red { color: #e74c3c !important; }
@@ -82,7 +82,7 @@
 </head>
 <body>
 
-<div id="toast">✅ PREDICTION COPIED!</div>
+<div id="toast">✅ COPIED!</div>
 
 <nav class="nav-system">
     <div class="nav-btn active" onclick="showSection('home', this)"><i class="fas fa-home"></i><span>HOME</span></div>
@@ -108,8 +108,8 @@
         <div style="text-align:center;"><span class="stat-label">NUMBER</span><div id="number-display" style="font-size:3rem; font-weight:900;">?</div></div>
     </div>
 
-    <div class="card-3d history-card">
-        <span class="stat-label"><i class="fas fa-history"></i> HISTORY</span>
+    <div class="card-3d" style="text-align: left;">
+        <span class="stat-label"><i class="fas fa-history"></i> LIVE HISTORY</span>
         <table><tbody id="history-rows"></tbody></table>
     </div>
 </section>
@@ -121,8 +121,8 @@
         <div class="stat-box"><span class="stat-label">JACKPOT</span><div class="stat-val" style="color:#f1c40f" id="st-j">0</div></div>
         <div class="stat-box"><span class="stat-label">TOTAL</span><div class="stat-val" id="st-t">0</div></div>
     </div>
-    <div class="card-3d">
-        <span class="stat-label">TREND</span>
+    <div class="card-3d" style="margin-top:20px;">
+        <span class="stat-label">TREND CHART</span>
         <div class="trend-chart" id="trend-list"></div>
     </div>
 </section>
@@ -133,81 +133,61 @@
 
 <script>
 /* ══════════════════════════════════════════════════════════════════════
-   FX BEAST PREDICTOR ENGINE v3.0 LOGIC
+   ADX BEAST v3.0 FULL ENGINE INTEGRATION (FROM CALCU.HTML)
 ══════════════════════════════════════════════════════════════════════ */
-class FXBeastPredictor {
-    constructor() { this.history = []; this.sizeHistory = []; }
-    loadHistory(rawData) {
-        if (!rawData) return;
-        this.history = []; this.sizeHistory = [];
-        rawData.forEach(item => {
-            let num = parseInt(item.number) % 10;
-            this.history.push(num);
-            this.sizeHistory.push(num >= 5 ? 'BIG' : 'SMALL');
-        });
-    }
-    predict() {
-        const h = this.sizeHistory;
-        if(h.length < 2) return { result: "BIG", num: 7 };
-        
-        // Streak Breaker Logic from v3.0
-        let streak = 1; for(let i=1; i<h.length; i++) { if(h[i]===h[0]) streak++; else break; }
-        if(streak >= 3) {
-            let res = h[0] === 'BIG' ? 'SMALL' : 'BIG';
-            return { result: res, num: res === 'BIG' ? 7 : 2 };
-        }
-        
-        // Trend Reversal Logic
-        let res = h[0] === 'BIG' ? 'SMALL' : 'BIG';
-        let num = res === "BIG" ? [7, 8, 9, 6][Math.floor(Math.random()*4)] : [1, 2, 3, 4][Math.floor(Math.random()*4)];
-        return { result: res, num: num };
-    }
+class ADXBeastPredictor {
+  constructor() {
+    this.history = []; this.sizeHistory = [];
+    this.WEIGHTS = { markov: 0.95, trend: 0.90, freq: 0.88, streak: 0.88 };
+  }
+  load(data) {
+    this.history = data.map(i => parseInt(i.number) % 10);
+    this.sizeHistory = this.history.map(n => n >= 5 ? 'BIG' : 'SMALL');
+  }
+  predictSide() {
+    const h = this.sizeHistory;
+    if(h.length < 5) return "BIG";
+    // Streak Breaker Logic
+    let s = 1; for(let i=1; i<h.length; i++){ if(h[i]===h[0]) s++; else break; }
+    if(s >= 3) return h[0] === 'BIG' ? 'SMALL' : 'BIG';
+    // Markov Chain Logic
+    let trans = 0; for(let i=0; i<h.length-1; i++) if(h[i]!==h[i+1]) trans++;
+    return (trans/h.length > 0.5) ? (h[0]==='BIG'?'SMALL':'BIG') : h[0];
+  }
+  predictNum() {
+    const scores = Array(10).fill(0);
+    this.history.slice(0, 30).forEach((n, i) => scores[n] += Math.pow(0.93, i));
+    return scores.indexOf(Math.max(...scores));
+  }
 }
 
-const engine = new FXBeastPredictor();
+const engine = new ADXBeastPredictor();
 let stats = { w: 0, l: 0, j: 0, t: 0 }, lastP = null, currentPred = null, historyData = [];
 
-function showSection(id, btn) {
-    document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active-section'));
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById(id + '-section').classList.add('active-section');
-    btn.classList.add('active');
-}
-
-function showToast() {
-    const x = document.getElementById("toast");
-    x.className = "show";
-    setTimeout(() => { x.className = ""; }, 2500);
-}
-
-function getCol(n) {
-    n = parseInt(n);
-    if (n == 0) return '0'; if (n == 5) return '5';
-    return [1,3,7,9].includes(n) ? 'green' : 'red';
-}
-
-/* ══════════════════════════════════════════════════════════════════════
-   FIXED: TABLE FORMAT COPY FUNCTION
-══════════════════════════════════════════════════════════════════════ */
-window.copyPred = function(period, side, num) {
-    const tableLine = "━━━━━━━━━━━━━━━━━━";
-    const text = `💎 STANZIN V2 PRO 💎\n${tableLine}\n┃ PERIOD   ┃ ${period}\n${tableLine}\n┃ PREDICT  ┃ ${side}\n${tableLine}\n┃ NUMBER   ┃ ${num}\n${tableLine}`;
-    
-    if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(text).then(showToast).catch(() => fallbackCopy(text));
-    } else {
-        fallbackCopy(text);
-    }
-}
-
-function fallbackCopy(text) {
+window.copyData = function(p, s, n) {
+    const text = `💎 STANZIN V2 PRO 💎\n━━━━━━━━━━━━\n┃ PERIOD ┃ ${p}\n┃ PREDICT ┃ ${s}\n┃ NUMBER ┃ ${n}\n━━━━━━━━━━━━`;
     const el = document.createElement('textarea');
     el.value = text;
     document.body.appendChild(el);
     el.select();
     document.execCommand('copy');
     document.body.removeChild(el);
-    showToast();
+    const x = document.getElementById("toast");
+    x.className = "show";
+    setTimeout(() => x.className = "", 2500);
+};
+
+window.showSection = function(id, btn) {
+    document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active-section'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(id + '-section').classList.add('active-section');
+    btn.classList.add('active');
+};
+
+function getCol(n) {
+    n = parseInt(n);
+    if (n == 0) return '0'; if (n == 5) return '5';
+    return [1,3,7,9].includes(n) ? 'green' : 'red';
 }
 
 async function update() {
@@ -217,11 +197,14 @@ async function update() {
         const latest = d.data.list[0];
 
         if (lastP !== latest.issueNumber) {
-            engine.loadHistory(d.data.list);
+            engine.load(d.data.list);
             const actN = parseInt(latest.number), actS = actN >= 5 ? "BIG" : "SMALL";
 
-            document.getElementById('trend-list').insertAdjacentHTML('afterbegin', `<span class="trend-no txt-${getCol(actN)}">${actN}</span>`);
+            // Update Trend List
+            const trendList = document.getElementById('trend-list');
+            trendList.innerHTML = d.data.list.slice(0, 15).map(i => `<span class="trend-no txt-${getCol(i.number)}">${i.number}</span>`).join('');
 
+            // Calculate Win/Loss Logic
             if(currentPred && currentPred.period === latest.issueNumber) {
                 let res = "LOSS";
                 if(currentPred.num === actN) { res = "JACKPOT"; stats.j++; stats.w++; }
@@ -232,17 +215,17 @@ async function update() {
             }
 
             const nextID = (BigInt(latest.issueNumber) + 1n).toString();
-            const pred = engine.predict();
+            const resS = engine.predictSide(), resN = engine.predictNum();
 
             document.getElementById('period-num').innerText = nextID;
-            document.getElementById('prediction-text').innerText = pred.result;
-            document.getElementById('prediction-text').style.color = (pred.result === "BIG") ? "#ffa502" : "#1e90ff";
-            document.getElementById('number-display').innerText = pred.num;
-            document.getElementById('number-display').className = 'txt-' + getCol(pred.num);
+            document.getElementById('prediction-text').innerText = resS;
+            document.getElementById('prediction-text').style.color = (resS === 'BIG') ? '#ffa502' : '#1e90ff';
+            document.getElementById('number-display').innerText = resN;
+            document.getElementById('number-display').className = 'txt-' + getCol(resN);
 
-            historyData.unshift({ period: nextID, side: pred.result, num: pred.num, status: "WAITING" });
+            historyData.unshift({ period: nextID, side: resS, num: resN, status: "WAITING" });
             if(historyData.length > 10) historyData.pop();
-            currentPred = { period: nextID, side: pred.result, num: pred.num };
+            currentPred = { period: nextID, side: resS, num: resN };
             lastP = latest.issueNumber;
             updateUI();
         }
@@ -264,7 +247,7 @@ function updateUI() {
             <td style="color:${h.side === 'BIG' ? '#ffa502' : '#1e90ff'}">${h.side}</td>
             <td class="txt-${getCol(h.num)}">${h.num}</td>
             <td class="${sCol}">${h.status}</td>
-            <td><i class="fas fa-copy copy-btn" onclick="copyPred('${h.period}','${h.side}','${h.num}')"></i></td>
+            <td><div class="copy-btn-box" onclick="window.copyData('${h.period}','${h.side}','${h.num}')"><i class="fas fa-copy"></i></div></td>
         </tr>`;
     });
     document.getElementById('history-rows').innerHTML = html;
