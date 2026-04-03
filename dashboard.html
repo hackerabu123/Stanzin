@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ASURA V6 - PREMIUM EDITION</title>
+    <title>STANZIN V2 PRO - ADX BEAST v3.0</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
         body { background: #e0e5ec; min-height: 100vh; color: #333; overflow-x: hidden; }
         
-        /* TOAST NOTIFICATION */
         #toast {
             visibility: hidden; min-width: 250px; background-color: #6c5ce7; color: #fff;
             text-align: center; border-radius: 15px; padding: 16px; position: fixed;
@@ -20,7 +19,6 @@
         @keyframes fadein { from {top: 0; opacity: 0;} to {top: 30px; opacity: 1;} }
         @keyframes fadeout { from {top: 30px; opacity: 1;} to {top: 0; opacity: 0;} }
 
-        /* NAVIGATION */
         .nav-system {
             position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
             width: 92%; max-width: 380px; height: 70px;
@@ -35,7 +33,6 @@
         .page-section { display: none; min-height: 100vh; padding: 15px; padding-bottom: 110px; width: 100%; max-width: 450px; margin: 0 auto; }
         .active-section { display: flex; flex-direction: column; gap: 20px; }
 
-        /* CARDS */
         .card-3d {
             background: #e0e5ec; border-radius: 25px; padding: 20px;
             box-shadow: 8px 8px 16px #b8bec9, -8px -8px 16px #ffffff;
@@ -43,7 +40,7 @@
             position: relative; overflow: hidden;
         }
 
-        /* TIMER BOX WITH BLUR */
+        /* Original Timer Design Restore */
         .timer-card { min-height: 180px; display: flex; flex-direction: column; justify-content: center; align-items: center; }
         .timer-container { position: relative; display: inline-block; margin-top: 15px; }
         .timer-val { font-size: 4.5rem; font-weight: 900; color: #6c5ce7; line-height: 1; letter-spacing: -2px; }
@@ -63,18 +60,16 @@
         .stat-box { padding: 15px; border-radius: 20px; box-shadow: inset 4px 4px 8px #b8bec9, inset -4px -4px 8px #ffffff; text-align: center; }
         .stat-label { font-size: 0.65rem; font-weight: 900; color: #888; text-transform: uppercase; letter-spacing: 1px; }
         .stat-val { font-size: 1.4rem; font-weight: 900; margin-top: 5px; }
-        .trend-chart { display: flex; gap: 15px; overflow-x: auto; padding: 10px 0; scrollbar-width: none; }
-        .trend-no { font-size: 1.8rem; font-weight: 900; }
-
-        /* HISTORY */
-        .history-card { text-align: left; height: auto; }
-        table { width: 100%; border-collapse: collapse; }
-        td { padding: 15px 5px; font-size: 0.9rem; font-weight: 900; text-align: center; border-bottom: 1px solid #ced4da; }
         
-        .copy-btn { color: #6c5ce7; cursor: pointer; font-size: 1.1rem; padding: 5px; }
-        .copy-btn:active { transform: scale(0.8); color: #2ecc71; }
+        .trend-chart { display: flex; gap: 15px; overflow-x: auto; padding: 10px 0; scrollbar-width: none; }
+        .trend-no { font-size: 1.8rem; font-weight: 900; min-width: 40px; text-align: center; }
 
-        /* COLORS */
+        table { width: 100%; border-collapse: collapse; }
+        td { padding: 15px 5px; font-size: 0.85rem; font-weight: 900; text-align: center; border-bottom: 1px solid #ced4da; }
+        
+        .copy-btn-box { display: inline-block; padding: 12px; cursor: pointer; color: #6c5ce7; transition: 0.2s; }
+        .copy-btn-box:active { transform: scale(1.3); color: #2ecc71; }
+
         .txt-green { color: #2ecc71 !important; }
         .txt-red { color: #e74c3c !important; }
         .txt-0 { background: linear-gradient(135deg, #e74c3c 50%, #9b59b6 50%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
@@ -87,7 +82,7 @@
 </head>
 <body>
 
-<div id="toast">✅ PREDICTION COPIED!</div>
+<div id="toast">✅ COPIED!</div>
 
 <nav class="nav-system">
     <div class="nav-btn active" onclick="showSection('home', this)"><i class="fas fa-home"></i><span>HOME</span></div>
@@ -113,32 +108,21 @@
         <div style="text-align:center;"><span class="stat-label">NUMBER</span><div id="number-display" style="font-size:3rem; font-weight:900;">?</div></div>
     </div>
 
-    <div class="card-3d history-card">
-        <span class="stat-label"><i class="fas fa-history"></i> PREDICTION HISTORY</span>
+    <div class="card-3d" style="text-align: left;">
+        <span class="stat-label"><i class="fas fa-history"></i> LIVE HISTORY</span>
         <table><tbody id="history-rows"></tbody></table>
     </div>
 </section>
 
 <section id="analysis-section" class="page-section">
-    <div class="card-3d">
-        <span class="stat-label">LIVE VOLATILITY</span>
-        <div style="height: 80px; display: flex; align-items: flex-end; justify-content: space-around; margin-top: 10px;">
-            <div style="width:10px; height:70%; background:#2ecc71; border-radius:3px; animation: bounce 1.5s infinite;"></div>
-            <div style="width:10px; height:45%; background:#e74c3c; border-radius:3px; animation: bounce 2s infinite;"></div>
-            <div style="width:10px; height:85%; background:#2ecc71; border-radius:3px; animation: bounce 1.2s infinite;"></div>
-            <div style="width:10px; height:55%; background:#e74c3c; border-radius:3px; animation: bounce 1.8s infinite;"></div>
-        </div>
-    </div>
-    
     <div class="stats-grid">
         <div class="stat-box"><span class="stat-label">WIN</span><div class="stat-val txt-green" id="st-w">0</div></div>
         <div class="stat-box"><span class="stat-label">LOSS</span><div class="stat-val txt-red" id="st-l">0</div></div>
         <div class="stat-box"><span class="stat-label">JACKPOT</span><div class="stat-val" style="color:#f1c40f" id="st-j">0</div></div>
         <div class="stat-box"><span class="stat-label">TOTAL</span><div class="stat-val" id="st-t">0</div></div>
     </div>
-
-    <div class="card-3d">
-        <span class="stat-label">TREND (ACTUAL RESULTS)</span>
+    <div class="card-3d" style="margin-top:20px;">
+        <span class="stat-label">TREND CHART</span>
         <div class="trend-chart" id="trend-list"></div>
     </div>
 </section>
@@ -147,111 +131,130 @@
     <iframe src="https://www.jalwagame.com/#/saasLottery/WinGo?gameId=1"></iframe>
 </section>
 
-<style>
-    @keyframes bounce { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(0.6); } }
-</style>
-
 <script>
-    let stats = { w: 0, l: 0, j: 0, t: 0 };
-    let lastP = null;
-    let currentPred = null;
-    let historyData = [];
+/* ══════════════════════════════════════════════════════════════════════
+   ADX BEAST v3.0 FULL ENGINE INTEGRATION (FROM CALCU.HTML)
+══════════════════════════════════════════════════════════════════════ */
+class ADXBeastPredictor {
+  constructor() {
+    this.history = []; this.sizeHistory = [];
+    this.WEIGHTS = { markov: 0.95, trend: 0.90, freq: 0.88, streak: 0.88 };
+  }
+  load(data) {
+    this.history = data.map(i => parseInt(i.number) % 10);
+    this.sizeHistory = this.history.map(n => n >= 5 ? 'BIG' : 'SMALL');
+  }
+  predictSide() {
+    const h = this.sizeHistory;
+    if(h.length < 5) return "BIG";
+    // Streak Breaker Logic
+    let s = 1; for(let i=1; i<h.length; i++){ if(h[i]===h[0]) s++; else break; }
+    if(s >= 3) return h[0] === 'BIG' ? 'SMALL' : 'BIG';
+    // Markov Chain Logic
+    let trans = 0; for(let i=0; i<h.length-1; i++) if(h[i]!==h[i+1]) trans++;
+    return (trans/h.length > 0.5) ? (h[0]==='BIG'?'SMALL':'BIG') : h[0];
+  }
+  predictNum() {
+    const scores = Array(10).fill(0);
+    this.history.slice(0, 30).forEach((n, i) => scores[n] += Math.pow(0.93, i));
+    return scores.indexOf(Math.max(...scores));
+  }
+}
 
-    function showSection(id, btn) {
-        document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active-section'));
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(id + '-section').classList.add('active-section');
-        btn.classList.add('active');
-        window.scrollTo(0,0);
-    }
+const engine = new ADXBeastPredictor();
+let stats = { w: 0, l: 0, j: 0, t: 0 }, lastP = null, currentPred = null, historyData = [];
 
-    function showToast() {
-        let x = document.getElementById("toast");
-        x.className = "show";
-        setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
-    }
+window.copyData = function(p, s, n) {
+    const text = `💎 STANZIN V2 PRO 💎\n━━━━━━━━━━━━\n┃ PERIOD ┃ ${p}\n┃ PREDICT ┃ ${s}\n┃ NUMBER ┃ ${n}\n━━━━━━━━━━━━`;
+    const el = document.createElement('textarea');
+    el.value = text;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    const x = document.getElementById("toast");
+    x.className = "show";
+    setTimeout(() => x.className = "", 2500);
+};
 
-    function getCol(n) {
-        n = parseInt(n);
-        if (n == 0) return '0'; if (n == 5) return '5';
-        return [1,3,7,9].includes(n) ? 'green' : 'red';
-    }
+window.showSection = function(id, btn) {
+    document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active-section'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(id + '-section').classList.add('active-section');
+    btn.classList.add('active');
+};
 
-    function copyPred(period, side, num) {
-        const text = `💎 *STANZIN V1.2 PREDICTION* 💎\n━━━━━━━━━━━━━━━━━━━━━━\n🗓️ **Period:** ${period}\n🎯 **Side:** ${side.toUpperCase()}\n🔢 **Number:** ${num}\n━━━━━━━━━━━━━━━━━━━━━━\n🚀 *Analyze & Play Smart!*`;
-                const el = document.createElement('textarea');
-        el.value = text;
-        document.body.appendChild(el);
-        el.select();
-        document.execCommand('copy');
-        document.body.removeChild(el);
-        showToast();
-    }
+function getCol(n) {
+    n = parseInt(n);
+    if (n == 0) return '0'; if (n == 5) return '5';
+    return [1,3,7,9].includes(n) ? 'green' : 'red';
+}
 
-    async function update() {
-        try {
-            const r = await fetch(`https://draw.ar-lottery01.com/WinGo/WinGo_1M/GetHistoryIssuePage.json?ts=${Date.now()}`);
-            const d = await r.json();
-            const latest = d.data.list[0];
+async function update() {
+    try {
+        const r = await fetch(`https://draw.ar-lottery01.com/WinGo/WinGo_1M/GetHistoryIssuePage.json?ts=${Date.now()}`);
+        const d = await r.json();
+        const latest = d.data.list[0];
 
-            if (lastP !== latest.issueNumber) {
-                const actualN = parseInt(latest.number);
-                const actualS = actualN >= 5 ? "BIG" : "SMALL";
+        if (lastP !== latest.issueNumber) {
+            engine.load(d.data.list);
+            const actN = parseInt(latest.number), actS = actN >= 5 ? "BIG" : "SMALL";
 
-                // Add to trend chart
-                const trendHtml = `<span class="trend-no txt-${getCol(actualN)}">${actualN}</span>`;
-                document.getElementById('trend-list').insertAdjacentHTML('afterbegin', trendHtml);
+            // Update Trend List
+            const trendList = document.getElementById('trend-list');
+            trendList.innerHTML = d.data.list.slice(0, 15).map(i => `<span class="trend-no txt-${getCol(i.number)}">${i.number}</span>`).join('');
 
-                if(currentPred && currentPred.period === latest.issueNumber) {
-                    let res = "LOSS";
-                    if(currentPred.num === actualN) { res = "JACKPOT"; stats.j++; stats.w++; }
-                    else if(currentPred.side === actualS) { res = "WIN"; stats.w++; }
-                    else { stats.l++; }
-                    stats.t++;
-                    historyData[0].status = res;
-                }
-
-                const nextID = (BigInt(latest.issueNumber) + 1n).toString();
-                const predSide = (Math.random() > 0.5) ? "BIG" : "SMALL";
-                const predNum = (predSide === "SMALL") ? Math.floor(Math.random()*5) : Math.floor(Math.random()*5)+5;
-
-                document.getElementById('period-num').innerText = nextID;
-                document.getElementById('prediction-text').innerText = predSide;
-                document.getElementById('prediction-text').style.color = (predSide === "BIG") ? "#ffa502" : "#1e90ff";
-                document.getElementById('number-display').innerText = predNum;
-                document.getElementById('number-display').className = 'txt-' + getCol(predNum);
-
-                historyData.unshift({ period: nextID, side: predSide, num: predNum, status: "WAITING" });
-                currentPred = { period: nextID, side: predSide, num: predNum };
-                lastP = latest.issueNumber;
-                updateUI();
+            // Calculate Win/Loss Logic
+            if(currentPred && currentPred.period === latest.issueNumber) {
+                let res = "LOSS";
+                if(currentPred.num === actN) { res = "JACKPOT"; stats.j++; stats.w++; }
+                else if(currentPred.side === actS) { res = "WIN"; stats.w++; }
+                else { stats.l++; }
+                stats.t++;
+                if(historyData.length > 0) historyData[0].status = res;
             }
-        } catch(e) {}
-        document.getElementById('timer-text').innerText = (60 - new Date().getSeconds()).toString().padStart(2, '0');
-    }
 
-    function updateUI() {
-        document.getElementById('st-w').innerText = stats.w;
-        document.getElementById('st-l').innerText = stats.l;
-        document.getElementById('st-j').innerText = stats.j;
-        document.getElementById('st-t').innerText = stats.t;
-        
-        let html = "";
-        historyData.forEach(h => {
-            let colClass = h.status === "WIN" || h.status === "JACKPOT" ? "txt-green" : (h.status === "LOSS" ? "txt-red" : "");
-            html += `<tr>
-                <td>..${h.period.slice(-4)}</td>
-                <td style="color:${h.side === 'BIG' ? '#ffa502' : '#1e90ff'}">${h.side}</td>
-                <td class="txt-${getCol(h.num)}">${h.num}</td>
-                <td class="${colClass}">${h.status}</td>
-                <td><i class="fas fa-copy copy-btn" onclick="copyPred('${h.period}','${h.side}','${h.num}')"></i></td>
-            </tr>`;
-        });
-        document.getElementById('history-rows').innerHTML = html;
-    }
+            const nextID = (BigInt(latest.issueNumber) + 1n).toString();
+            const resS = engine.predictSide(), resN = engine.predictNum();
 
-    setInterval(update, 2000);
-    update();
+            document.getElementById('period-num').innerText = nextID;
+            document.getElementById('prediction-text').innerText = resS;
+            document.getElementById('prediction-text').style.color = (resS === 'BIG') ? '#ffa502' : '#1e90ff';
+            document.getElementById('number-display').innerText = resN;
+            document.getElementById('number-display').className = 'txt-' + getCol(resN);
+
+            historyData.unshift({ period: nextID, side: resS, num: resN, status: "WAITING" });
+            if(historyData.length > 10) historyData.pop();
+            currentPred = { period: nextID, side: resS, num: resN };
+            lastP = latest.issueNumber;
+            updateUI();
+        }
+    } catch(e) {}
+    document.getElementById('timer-text').innerText = (60 - new Date().getSeconds()).toString().padStart(2, '0');
+}
+
+function updateUI() {
+    document.getElementById('st-w').innerText = stats.w;
+    document.getElementById('st-l').innerText = stats.l;
+    document.getElementById('st-j').innerText = stats.j;
+    document.getElementById('st-t').innerText = stats.t;
+    
+    let html = "";
+    historyData.forEach(h => {
+        let sCol = h.status === "WIN" || h.status === "JACKPOT" ? "txt-green" : (h.status === "LOSS" ? "txt-red" : "");
+        html += `<tr>
+            <td>..${h.period.slice(-4)}</td>
+            <td style="color:${h.side === 'BIG' ? '#ffa502' : '#1e90ff'}">${h.side}</td>
+            <td class="txt-${getCol(h.num)}">${h.num}</td>
+            <td class="${sCol}">${h.status}</td>
+            <td><div class="copy-btn-box" onclick="window.copyData('${h.period}','${h.side}','${h.num}')"><i class="fas fa-copy"></i></div></td>
+        </tr>`;
+    });
+    document.getElementById('history-rows').innerHTML = html;
+}
+
+setInterval(update, 2000);
+update();
 </script>
 </body>
 </html>
