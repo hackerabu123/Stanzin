@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>JAI CLUB VIP - RESTORED</title>
+    <title>JAI CLUB VIP - ASHURA V7</title>
     <style>
         :root {
             --lp-main: #d8b4fe;
-            --lp-glow: #c68ef9;
+            --lp-glow: #a855f7;
             --recovery-border: #ff0055;
             --panel-bg: rgba(10, 5, 20, 0.98);
             --bubbly-font: 'Varela Round', sans-serif;
@@ -16,7 +16,6 @@
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; font-family: var(--bubbly-font); }
         #game-frame { width: 100%; height: 100%; border: none; position: absolute; }
 
-        /* --- RESTORE COMPACT DIMENSIONS --- */
         #mainPanel {
             position: fixed; top: 85px; left: 10px; width: 195px;
             background: var(--panel-bg); border: 1.5px solid var(--lp-main);
@@ -26,7 +25,6 @@
             display: flex; flex-direction: column; gap: 8px; transition: 0.3s;
         }
 
-        /* --- RESTORE 3D CUBE TOGGLE --- */
         #cubeContainer {
             position: fixed; top: 85px; left: 10px; width: 45px; height: 45px;
             z-index: 10000; display: none; perspective: 1000px;
@@ -42,14 +40,12 @@
         .top { transform: rotateX(90deg) translateZ(21px); } .bottom { transform: rotateX(-90deg) translateZ(21px); }
         @keyframes rotateCube { from { transform: rotateX(0deg) rotateY(0deg); } to { transform: rotateX(360deg) rotateY(360deg); } }
 
-        /* --- RESTORE GOLDEN TITLE FIXED --- */
         .header { 
-            font-size: 11px; font-weight: 900; color: #fbbf24; /* Golden */
+            font-size: 11px; font-weight: 900; color: #fbbf24;
             text-align: center; letter-spacing: 1.5px;
             text-shadow: 0 0 10px #fbbf24;
         }
         
-        /* --- RESTORE BOLD WHITE PERIOD --- */
         .period-no { 
             font-size: 14px; color: #ffffff; font-weight: 900; 
             text-align: center; background: rgba(255, 255, 255, 0.05); 
@@ -57,14 +53,12 @@
             letter-spacing: 0.5px;
         }
 
-        /* --- RESTORE RESULT AREA --- */
         .result-area { 
             display: flex; align-items: center; justify-content: center;
             min-height: 70px; background: rgba(0,0,0,0.6); border-radius: 15px; width: 100%;
             position: relative; overflow: hidden; border: 1px solid rgba(168, 85, 247, 0.15); flex-direction: column;
         }
         
-        /* --- RESTORE PHOTO LOADING AREA --- */
         #photo-box { width: 50px; height: 50px; display: none; border-radius: 10px; background-size: cover; background-position: center; border: 2px solid var(--lp-main); box-shadow: 0 0 15px var(--lp-glow); }
 
         .text-3d { 
@@ -82,6 +76,8 @@
         .btn-exe:disabled { background: #333; color: #666; box-shadow: none; cursor: not-allowed; }
 
         .btn-hide { position: absolute; top: -5px; right: -5px; width: 22px; height: 22px; background: #1a1a2e; border: 1.2px solid var(--lp-main); color: var(--lp-main); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; z-index: 10; }
+        
+        #confidence-bar { font-size: 9px; color: #10b981; margin-top: 4px; display: none; }
     </style>
 </head>
 <body>
@@ -98,18 +94,16 @@
 
     <div id="mainPanel">
         <div class="btn-hide" onclick="toggleUI(true)">×</div>
-        
-        <div class="header">☆ JAI CLUB VIP ☆</div>
-
-        <div class="period-no" id="period-display">WAITING...</div>
+        <div class="header">☆ ASHURA V7 VIP ☆</div>
+        <div class="period-no" id="period-display">SYNCING...</div>
 
         <div class="result-area">
             <div id="photo-box"></div>
-            
-            <div id="calc-display" style="font-family: monospace; font-size: 10px; color: var(--lp-main); text-align: center; display: none;">SCANNING...</div>
-            <span id="msg" style="color:#444; font-size:9px;">SYSTEM READY V9</span>
+            <div id="calc-display" style="font-family: monospace; font-size: 10px; color: var(--lp-main); text-align: center; display: none;">ANALYZING TRENDS...</div>
+            <span id="msg" style="color:#666; font-size:9px;">ASHURA V7 ENGINE READY</span>
             <div class="text-3d" id="res-txt"></div>
             <div class="num-box" id="num-txt"></div>
+            <div id="confidence-bar"></div>
         </div>
 
         <div class="mode-container">
@@ -117,47 +111,93 @@
             <div class="mode-btn" id="mode-num" onclick="selectMode('num')">NUM</div>
         </div>
 
-        <button class="btn-exe" id="exe-btn" onclick="runAsuraV9()" disabled>EXECUTE V9</button>
+        <button class="btn-exe" id="exe-btn" onclick="executeV7()" disabled>EXECUTE V7</button>
     </div>
 
     <script>
-        // Use recursive logic from V9
-        class AsuraDarkMatter {
-            constructor() { this.consecutiveLosses = 0; this.lastPrediction = null; }
-            calculate() {
-                let finalScore = (Math.random() * 100) - 50;
-                // Recursive Error Logic (Logic 22)
-                if (this.consecutiveLosses >= 2) { finalScore *= -1.2; console.log("⚠️ Loss Recovery Active"); }
-                const probSmall = 1 / (1 + Math.exp(-finalScore / 12));
-                const decision = probSmall > 0.5 ? "SMALL" : "BIG";
-                const num = decision === "BIG" ? [5,6,7,8,9][Math.floor(Math.calculation()*5)] : [0,1,2,3,4][Math.floor(Math.random()*5)];
-                this.lastPrediction = decision;
-                return { prediction: decision, num: num, mode: this.consecutiveLosses >= 2 ? "RECOVERY" : "STABLE" };
+        // --- NEW ASHURA V7 CALCULATION ENGINE ---
+        function calculateAsuraV7(history) {
+            if (!history || history.length < 10) {
+                return { decision: Math.random() > 0.5 ? "BIG" : "SMALL", confidence: 0, num: 5 };
             }
+
+            const data = history.map(h => (parseInt(h.number) >= 5 ? "BIG" : "SMALL")).reverse();
+            let score = 0;
+
+            // 1. ORDER-2 MARKOV
+            let order2 = {};
+            for (let i = 2; i < data.length; i++) {
+                let state = data[i-2] + "_" + data[i-1];
+                if (!order2[state]) order2[state] = { BIG: 0, SMALL: 0 };
+                order2[state][data[i]]++;
+            }
+            let currentState = data[data.length-2] + "_" + data[data.length-1];
+            if (order2[currentState]) {
+                let b = order2[currentState].BIG;
+                let s = order2[currentState].SMALL;
+                if ((b + s) > 0) score += ((s - b) / (b + s)) * 4;
+            }
+
+            // 2. TREND MOMENTUM
+            let last10 = data.slice(-10);
+            let sCount = last10.filter(x => x === "SMALL").length;
+            let bCount = last10.length - sCount;
+            score += ((sCount - bCount) / last10.length) * 3;
+
+            // 3. VOLATILITY
+            let switches = 0;
+            for (let i = 1; i < last10.length; i++) if (last10[i] !== last10[i-1]) switches++;
+            let vol = switches / last10.length;
+            if (vol < 0.4) score *= 1.2; else if (vol > 0.7) score *= 0.6;
+
+            // 4. STREAK REVERSAL
+            let streak = 1;
+            for (let i = data.length - 1; i > 0; i--) {
+                if (data[i] === data[i-1]) streak++; else break;
+            }
+            let last = data[data.length-1];
+            if (streak >= 5) score += (last === "BIG") ? 2.5 : -2.5;
+            else if (streak >= 3) score += (last === "SMALL") ? 1 : -1;
+
+            // FINAL OUTPUT
+            let probSMALL = 1 / (1 + Math.exp(-score));
+            let decision = probSMALL > 0.5 ? "SMALL" : "BIG";
+            let confidence = Math.abs(probSMALL - 0.5) * 200;
+            let num = decision === "BIG" ? [5,6,7,8,9][Math.floor(Math.random()*5)] : [0,1,2,3,4][Math.floor(Math.random()*5)];
+
+            return { decision, confidence: confidence.toFixed(1), num };
         }
 
-        const AsuraEngine = new AsuraDarkMatter();
+        // --- UI & INTEGRATION ---
+        let gameHistory = [];
+        let currentPeriod = "";
+        let selectedMode = "";
+
         const panel = document.getElementById('mainPanel');
         const cube = document.getElementById('cubeContainer');
         const resTxt = document.getElementById('res-txt');
         const numTxt = document.getElementById('num-txt');
         const photoBox = document.getElementById('photo-box');
-        const calcDisplay = document.getElementById('calc-display');
-        const msg = document.getElementById('msg');
         const btn = document.getElementById('exe-btn');
         const periodDisplay = document.getElementById('period-display');
-        
-        let selectedMode = ""; 
-        let currentPeriod = "";
-        let lastExecutedPeriod = "";
+        const confBar = document.getElementById('confidence-bar');
 
-        // UI Drag
-        function drag(el) {
-            let x, y, ix, iy;
-            el.ontouchstart = (e) => { x = e.touches[0].clientX; y = e.touches[0].clientY; ix = el.offsetLeft; iy = el.offsetTop; }
-            el.ontouchmove = (e) => { el.style.left = (ix + (e.touches[0].clientX - x)) + 'px'; el.style.top = (iy + (e.touches[0].clientY - y)) + 'px'; }
+        async function fetchHistory() {
+            try {
+                const r = await fetch(`https://draw.ar-lottery01.com/WinGo/WinGo_1M/GetHistoryIssuePage.json?ts=${Date.now()}`);
+                const d = await r.json();
+                if(d?.data?.list) {
+                    gameHistory = d.data.list;
+                    let nextP = (BigInt(gameHistory[0].issueNumber) + 1n).toString();
+                    if(nextP !== currentPeriod) {
+                        currentPeriod = nextP;
+                        periodDisplay.innerText = currentPeriod;
+                        if(selectedMode !== "") btn.disabled = false;
+                    }
+                }
+            } catch(e) { console.error("Sync Error"); }
         }
-        drag(panel); drag(cube);
+        setInterval(fetchHistory, 2000);
 
         function selectMode(m) {
             selectedMode = m;
@@ -166,54 +206,42 @@
             btn.disabled = false;
         }
 
-        async function fetchPeriod() {
-            try {
-                const r = await fetch(`https://draw.ar-lottery01.com/WinGo/WinGo_1M/GetHistoryIssuePage.json?ts=${Date.now()}`);
-                const d = await r.json();
-                if(d?.data?.list) {
-                    let nextP = (BigInt(d.data.list[0].issueNumber) + 1n).toString();
-                    if(nextP !== currentPeriod) {
-                        currentPeriod = nextP;
-                        periodDisplay.innerText = currentPeriod;
-                        if(selectedMode !== "") btn.disabled = false;
-                    }
-                }
-            } catch(e) {}
-        }
-        setInterval(fetchPeriod, 2000);
-
-        function runAsuraV9() {
-            if (currentPeriod === lastExecutedPeriod || selectedMode === "") return;
-            msg.style.display = 'none'; resTxt.style.display = 'none'; numTxt.style.display = 'none'; calcDisplay.style.display = 'none';
+        function executeV7() {
             btn.disabled = true;
-
-            // --- RESTORE YOUR PHOTO LOADING ANIMATION ---
-            photoBox.style.backgroundImage = "url('data:image/jpeg;base64,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');";
+            document.getElementById('msg').style.display = 'none';
+            resTxt.style.display = 'none';
+            numTxt.style.display = 'none';
+            confBar.style.display = 'none';
+            
             photoBox.style.display = 'block';
+            photoBox.style.backgroundImage = "url('data:image/jpeg;base64,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');";
 
             setTimeout(() => {
                 photoBox.style.display = 'none';
-                const data = AsuraEngine.calculate();
-                lastExecutedPeriod = currentPeriod;
+                const result = calculateAsuraV7(gameHistory);
                 
-                // Result Display Restore
-                resTxt.innerText = data.prediction;
-                resTxt.style.color = data.prediction === "BIG" ? "#fbbf24" : "#22d3ee";
+                resTxt.innerText = result.decision;
+                resTxt.style.color = result.decision === "BIG" ? "#fbbf24" : "#22d3ee";
                 resTxt.style.display = 'block';
 
-                // Recovery Glow
-                if(data.mode === "RECOVERY") {
-                    panel.style.boxShadow = "0 0 40px rgba(255, 0, 0, 0.6)";
-                } else {
-                    panel.style.boxShadow = "0 8px 25px rgba(168, 85, 247, 0.5)";
-                }
+                confBar.innerText = "CONFIDENCE: " + result.confidence + "%";
+                confBar.style.display = 'block';
 
                 if (selectedMode === 'num') {
-                    numTxt.innerText = data.num; numTxt.style.display = 'flex';
+                    numTxt.innerText = result.num;
+                    numTxt.style.display = 'flex';
                 }
-                btn.innerText = "WAIT NEXT";
-            }, 2000); // 2 Seconds photo flash
+                btn.innerText = "NEXT ROUND";
+            }, 1500);
         }
+
+        // Dragging & Toggle logic
+        function drag(el) {
+            let x, y, ix, iy;
+            el.ontouchstart = (e) => { x = e.touches[0].clientX; y = e.touches[0].clientY; ix = el.offsetLeft; iy = el.offsetTop; }
+            el.ontouchmove = (e) => { el.style.left = (ix + (e.touches[0].clientX - x)) + 'px'; el.style.top = (iy + (e.touches[0].clientY - y)) + 'px'; }
+        }
+        drag(panel); drag(cube);
 
         function toggleUI(hide) {
             if(hide) { panel.style.display='none'; cube.style.display='flex'; cube.style.top=panel.style.top; cube.style.left=panel.style.left; }
