@@ -1,319 +1,230 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>JAI CLUB VIP - FIXED V11</title>
-    <style>
-        :root {
-            --lp-main: #d8b4fe;
-            --av-main: #ff4d4d;
-            --panel-bg: rgba(10, 5, 20, 0.98);
-            --wingo-neon: #a855f7;
-            --aviator-neon: #ef4444;
-        }
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>MADARA VIP MOD</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@900&display=swap" rel="stylesheet">
 
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; font-family: sans-serif; }
-        #game-frame { width: 100%; height: 100%; border: none; position: absolute; }
+<style>
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body { margin: 0; background: #050505; font-family: system-ui; color: white; font-weight: bold; height: 100vh; overflow: hidden; }
 
-        /* CIRCULAR ICONS & RINGS CONTAINER */
-        .icon-wrapper {
-            position: fixed; width: 70px; height: 70px;
-            z-index: 10000; cursor: pointer; touch-action: none;
-            display: flex; align-items: center; justify-content: center;
-        }
-        #wrapperWingo { top: 100px; left: 20px; }
-        #wrapperAviator { top: 190px; left: 20px; }
+/* TOAST */
+#toast { visibility: hidden; min-width: 200px; background: #1a1a1a; color: #fff; text-align: center; border-radius: 20px; padding: 12px; position: fixed; z-index: 2000; left: 50%; bottom: 100px; transform: translateX(-50%); opacity: 0; transition: 0.3s; border: 1.5px solid #7c68ff; }
+#toast.show { visibility: visible; opacity: 1; }
 
-        .circle-icon {
-            width: 55px; height: 55px; border-radius: 50%;
-            border: 2px solid #fff; box-shadow: 0 0 10px rgba(0,0,0,0.5);
-            background-size: cover; background-position: center; background-color: #fff;
-            position: absolute;
-        }
-        
-        #iconWingo { background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTT-9hiXOartb7om_yRT4XVGfUMh5fQNfh2Ig&s'); }
-        #iconAviator { background-image: url('https://static.vecteezy.com/ti/gratis-vector/p1/14976138-premie-vliegenier-logo-embleem-klein-propeller-vlak-vliegtuig-geisoleerd-vector.jpg'); }
+/* ANIMATIONS */
+@keyframes trophy-bounce { 0%, 100% { transform: translateY(0) scale(1); filter: drop-shadow(0 0 5px #3cff95); } 50% { transform: translateY(-5px) scale(1.1); filter: drop-shadow(0 0 15px #3cff95); } }
+@keyframes loss-shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-3px); } 75% { transform: translateX(3px); } }
+@keyframes gold-glow { 0%, 100% { color: #ffd700; text-shadow: 0 0 5px #ffd700; } 50% { color: #fff; text-shadow: 0 0 15px #ffd700; } }
 
-        /* HALF CIRCULAR RINGS (NEON) */
-        .half-ring {
-            position: absolute; width: 66px; height: 66px;
-            border-radius: 50%; border: 3px solid transparent;
-            animation: rotateRing 2s linear infinite;
-        }
-        #wrapperWingo .half-ring {
-            border-top-color: var(--wingo-neon);
-            border-right-color: var(--wingo-neon);
-            box-shadow: 0 0 10px var(--wingo-neon);
-        }
-        #wrapperAviator .half-ring {
-            border-top-color: var(--aviator-neon);
-            border-right-color: var(--aviator-neon);
-            box-shadow: 0 0 10px var(--aviator-neon);
-        }
+.screen { height: 100vh; width: 100%; overflow-y: auto; display: none; padding-bottom: 90px; }
+#home-screen { display: block; }
 
-        @keyframes rotateRing {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+/* HEADER */
+.header { background: linear-gradient(90deg,#7b67ff,#8c73ff); padding: 14px; display: flex; align-items: center; border-bottom-left-radius: 25px; border-bottom-right-radius: 25px; margin-bottom: 12px; }
+.avatar { width: 45px; height: 45px; border-radius: 50%; background: url('https://i.ibb.co/Hfk3vqyc/images-6.jpg'); background-size: cover; background-position: center; border: 2px solid #fff; margin-right: 12px; }
 
-        /* PANELS */
-        .ui-panel {
-            position: fixed; width: 220px; background: var(--panel-bg); 
-            border-radius: 20px; padding: 15px; z-index: 9999;
-            display: none; flex-direction: column; gap: 10px; border: 1.5px solid;
-            backdrop-filter: blur(5px); box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-        #wingoPanel { top: 80px; left: 15px; border-color: var(--lp-main); }
-        #aviatorPanel { top: 80px; left: 15px; border-color: var(--av-main); }
+.container { padding: 0 12px; }
 
-        .header { font-size: 12px; font-weight: 900; text-align: center; color: #fff; text-transform: uppercase; letter-spacing: 1px; }
-        .display-box { font-size: 16px; color: #fff; font-weight: 900; text-align: center; background: rgba(255,255,255,0.08); border-radius: 8px; padding: 8px; letter-spacing: 1px; border: 1px solid rgba(255,255,255,0.1); }
-        
-        .mode-container { display: flex; gap: 5px; }
-        .mode-btn { flex: 1; padding: 8px; border: 1px solid rgba(216, 180, 254, 0.4); border-radius: 8px; color: var(--lp-main); font-size: 10px; font-weight: bold; cursor: pointer; background: transparent; transition: 0.2s; }
-        .mode-btn.active { background: var(--lp-main); color: #000; box-shadow: 0 0 10px var(--lp-main); }
+/* BOXES */
+.compact-box { background: #121212; border-radius: 20px; padding: 12px 18px; display: flex; align-items: center; margin-bottom: 8px; border: 1px solid rgba(124, 104, 255, 0.4); }
+.val-small { background: #7c68ff; border-radius: 12px; padding: 5px 15px; font-size: 15px; min-width: 90px; text-align: center; margin-left: auto; }
 
-        .result-area { min-height: 80px; background: rgba(0,0,0,0.3); border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; border: 1px solid rgba(255,255,255,0.05); }
-        
-        /* Modified Button Style for Locked State */
-        .btn-exe { width: 100%; padding: 12px; border-radius: 12px; border: none; font-weight: 900; color: #fff; background: #555; cursor: pointer; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px; }
-        .btn-exe.locked { background: #333; color: #aaa; }
-        .btn-exe.wingo-active { background: var(--lp-main); color: #000; box-shadow: 0 0 15px var(--wingo-neon); }
-        .btn-exe.aviator-active { background: var(--av-main); color: #fff; box-shadow: 0 0 15px var(--aviator-neon); }
+/* CIRCLES */
+.circles-line { display: flex; justify-content: space-around; margin: 20px 0; }
+.prog-ring { position: relative; width: 55px; height: 55px; }
+.prog-ring svg { width: 55px; height: 55px; transform: rotate(-90deg); }
+.prog-ring circle { fill: none; stroke-width: 6; stroke-linecap: round; }
+.bg-c { stroke: #1a1a1a; }
+.fg-c { stroke-dasharray: 144.5; stroke-dashoffset: 144.5; transition: stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1); }
+.ring-val { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 12px; font-family: 'Poppins'; }
 
-        .btn-hide { position: absolute; top: -8px; right: -8px; width: 28px; height: 28px; background: #000; border: 2px solid #fff; border-radius: 50%; color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; font-size: 16px; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
-    </style>
+/* STATS */
+.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.stat-card { padding: 15px 10px; border-radius: 20px; text-align: center; border: 2px solid rgba(255,255,255,0.1); }
+.stat-card .count { font-size: 24px; font-family: 'Poppins'; display: block; margin-top: 5px; }
+.lab-win { background: rgba(60, 255, 149, 0.1); color: #3cff95; border-color: #3cff95; }
+.lab-loss { background: rgba(255, 60, 60, 0.1); color: #ff3c3c; border-color: #ff3c3c; }
+.lab-jack { background: rgba(124, 104, 255, 0.1); color: #b39dff; border-color: #7c68ff; }
+.lab-total { background: rgba(255, 255, 255, 0.05); color: #ffffff; border-color: #ffffff; }
+
+/* HISTORY */
+.hist-card { background: #121212; border-radius: 18px; padding: 16px; margin-bottom: 12px; position: relative; border-left: 6px solid #7c68ff; }
+.hist-label { color: #7c68ff; font-size: 11px; margin-right: 5px; opacity: 0.8; }
+.st-icon { width: 24px; height: 24px; vertical-align: middle; margin-right: 8px; }
+.win-trophy { fill: #3cff95; animation: trophy-bounce 1.5s infinite; }
+.loss-x { fill: #ff3c3c; animation: loss-shake 0.5s infinite; }
+.pending-text { animation: gold-glow 1.5s infinite; font-size: 14px; }
+
+.copy-btn { position: absolute; right: 10px; top: 10px; background: rgba(124, 104, 255, 0.2); border: none; padding: 8px; border-radius: 10px; }
+.copy-btn svg { width: 18px; fill: #7c68ff; }
+
+/* NAV */
+.nav { position: fixed; bottom: 0; width: 100%; background: #d7ccff; display: flex; justify-content: space-around; padding: 12px 0; border-top-left-radius: 25px; border-top-right-radius: 25px; z-index: 1000; }
+.nav-item svg { width: 26px; height: 26px; fill: #6b5cff; }
+.nav-item.active svg { fill: #3f2bff; transform: scale(1.1); }
+</style>
 </head>
+
 <body>
+<div id="toast">Copied</div>
 
-    <iframe id="game-frame" src="https://www.jaiclub11.com/#/register?invitationCode=28262582138"></iframe>
-
-    <div id="wrapperWingo" class="icon-wrapper" onclick="openUI('wingo')">
-        <div class="half-ring"></div>
-        <div id="iconWingo" class="circle-icon"></div>
+<div id="home-screen" class="screen">
+    <div class="header">
+        <div class="avatar"></div>
+        <div>MADARA VIP MOD<br><span style="font-size:10px; opacity:0.8;">ASURA V7 • UCHIHA ENGINE</span></div>
     </div>
-
-    <div id="wrapperAviator" class="icon-wrapper" onclick="openUI('aviator')">
-        <div class="half-ring"></div>
-        <div id="iconAviator" class="circle-icon"></div>
-    </div>
-
-    <div id="wingoPanel" class="ui-panel">
-        <div class="btn-hide" onclick="closeUI('wingo')">×</div>
-        <div class="header" style="color: #fbbf24; text-shadow: 0 0 5px #fbbf24;">☆ JAI CLUB WINGO ☆</div>
-        <div class="display-box" id="period-display">LOADING...</div>
-        <div class="result-area">
-            <span id="msg" style="color:#ff4d4d; font-size:11px; font-weight: bold; letter-spacing: 1px;">Click Below to Activate</span>
-            <div id="res-txt" style="font-size:30px; font-weight:900; color:#fff; display:none; text-shadow: 0 0 10px #fff;"></div>
+    <div class="container">
+        <div class="compact-box"><div>PERIOD NO</div><div style="margin-left:auto; color:#7c68ff;" id="p-no">...</div></div>
+        <div class="compact-box"><div>PREDICTION</div><div class="val-small" id="p-text">WAIT</div></div>
+        <div class="compact-box"><div>NUMBER</div><div class="val-small" id="n-val">?</div></div>
+        
+        <div class="circles-line">
+            <div class="prog-ring"><svg><circle class="bg-c" cx="27.5" cy="27.5" r="23"></circle><circle id="r-p" class="fg-c" cx="27.5" cy="27.5" r="23" stroke="#3cff95"></circle></svg><div class="ring-val" id="v-p">0</div></div>
+            <div class="prog-ring"><svg><circle class="bg-c" cx="27.5" cy="27.5" r="23"></circle><circle id="r-f" class="fg-c" cx="27.5" cy="27.5" r="23" stroke="#ff3c3c"></circle></svg><div class="ring-val" id="v-f">0</div></div>
+            <div class="prog-ring"><svg><circle class="bg-c" cx="27.5" cy="27.5" r="23"></circle><circle id="r-j" class="fg-c" cx="27.5" cy="27.5" r="23" stroke="#7c68ff"></circle></svg><div class="ring-val" id="v-j">0</div></div>
+            <div class="prog-ring"><svg><circle class="bg-c" cx="27.5" cy="27.5" r="23"></circle><circle id="r-t" class="fg-c" cx="27.5" cy="27.5" r="23" stroke="#ffffff"></circle></svg><div class="ring-val" id="v-t">0</div></div>
         </div>
-        <div class="mode-container">
-            <button class="mode-btn active" id="m-bs" onclick="setMode('bs')">B/S</button>
-            <button class="mode-btn" id="m-num" onclick="setMode('num')">NUM</button>
+
+        <div class="stats-grid">
+            <div class="stat-card lab-win">WIN<span class="count" id="b-p">0</span></div>
+            <div class="stat-card lab-loss">LOSS<span class="count" id="b-f">0</span></div>
+            <div class="stat-card lab-jack">JACKPOT<span class="count" id="b-j">0</span></div>
+            <div class="stat-card lab-total">TOTAL<span class="count" id="b-t">0</span></div>
         </div>
-        <button class="btn-exe locked" id="exe-wingo" onclick="handleWingoClick()">Activate Panel</button>
     </div>
+</div>
 
-    <div id="aviatorPanel" class="ui-panel">
-        <div class="btn-hide" onclick="closeUI('aviator')">×</div>
-        <div class="header" style="color: var(--av-main); text-shadow: 0 0 5px var(--av-main);">✈ AVIATOR ULTRA ✈</div>
-        <div class="display-box" id="av-time">00:00:00</div>
-        <div class="result-area">
-            <span id="av-msg" style="color:#ff4d4d; font-size:11px; font-weight: bold; letter-spacing: 1px;">Click Below to Activate</span>
-            <div id="av-res" style="font-size:30px; font-weight:900; color:#ff4d4d; display:none; text-shadow: 0 0 10px var(--av-main);"></div>
-        </div>
-        <button class="btn-exe locked" id="exe-aviator" onclick="handleAviatorClick()">Activate Panel</button>
-    </div>
+<div id="game-screen" class="screen"><iframe src="https://www.jaiclub01.com/#/register?invitationCode=28262582138" style="width:100%; height:100%; border:none;"></iframe></div>
+<div id="history-screen" class="screen"><div class="header">ANALYTICS LOG</div><div class="container" id="history-list"></div></div>
 
-    <script>
-        let isWingoActivated = false;
-        let isAviatorActivated = false;
-        let selectedMode = 'bs';
+<div class="nav">
+    <div class="nav-item active" onclick="tab('home')"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></div>
+    <div class="nav-item" onclick="tab('game')"><svg viewBox="0 0 24 24"><path d="M21 6H3c-1.1 0-2 .9-2 2v6c0 1.1.9 2 2 2h3l2 3 2-3h4l2 3 2-3h3c1.1 0 2-.9 2-2V8z"/></svg></div>
+    <div class="nav-item" onclick="tab('history')"><svg viewBox="0 0 24 24"><path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg></div>
+</div>
 
-        function openUI(type) {
-            // Close other panel first
-            document.getElementById('wingoPanel').style.display = 'none';
-            document.getElementById('aviatorPanel').style.display = 'none';
-            document.getElementById('wrapperWingo').style.display = 'flex';
-            document.getElementById('wrapperAviator').style.display = 'flex';
+<script>
+let lastP = null, pendingEntry = null, s = { j:0, p:0, f:0, t:0 };
 
-            document.getElementById(type + 'Panel').style.display = 'flex';
-            document.getElementById('wrapper' + (type === 'wingo' ? 'Wingo' : 'Aviator')).style.display = 'none';
-        }
-        function closeUI(type) {
-            document.getElementById(type + 'Panel').style.display = 'none';
-            document.getElementById('wrapper' + (type === 'wingo' ? 'Wingo' : 'Aviator')).style.display = 'flex';
-        }
+const SVGS = {
+    win: `<svg class="st-icon win-trophy" viewBox="0 0 24 24"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v3c0 2.55 1.92 4.63 4.39 4.94A5.01 5.01 0 0 0 11 15.9V19H7v2h10v-2h-4v-3.1a5.01 5.01 0 0 0 3.61-1.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"/></svg>`,
+    loss: `<svg class="st-icon loss-x" viewBox="0 0 24 24"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"/></svg>`,
+    copy: `<svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>`
+};
 
-        // --- FIX LOGIC FOR ACTIVATION ---
+function calculateAsuraV7(history) {
+    if (!history || history.length < 10) return { decision: Math.random() > 0.5 ? "B" : "S" };
+    const data = history.map(h => parseInt(h.number) >= 5 ? "BIG" : "SMALL").reverse();
+    let score = 0;
+    let order2 = {};
+    for (let i = 2; i < data.length; i++) {
+        let state = data[i-2] + "_" + data[i-1];
+        if (!order2[state]) order2[state] = { BIG: 0, SMALL: 0 };
+        order2[state][data[i]]++;
+    }
+    let cur = data[data.length-2] + "_" + data[data.length-1];
+    if (order2[cur]) {
+        let b = order2[cur].BIG, s = order2[cur].SMALL;
+        if ((b + s) > 0) score += ((s - b) / (b + s)) * 4;
+    }
+    let last20 = data.slice(-20);
+    let sC = last20.filter(x => x === "SMALL").length, bC = 20 - sC;
+    score += ((sC - bC) / 20) * 3;
+    let probSmall = 1 / (1 + Math.exp(-score));
+    return { decision: probSmall > 0.5 ? "S" : "B" };
+}
 
-        function handleWingoClick() {
-            if (!isWingoActivated) {
-                activateWingo();
-            } else {
-                runWingo();
-            }
-        }
+function showToast(msg) {
+    const t = document.getElementById("toast"); t.innerText = msg; t.className = "show";
+    setTimeout(() => { t.className = ""; }, 2000);
+}
 
-        function handleAviatorClick() {
-            if (!isAviatorActivated) {
-                activateAviator();
-            } else {
-                runAviator();
-            }
-        }
+window.copyToClip = (p, pr, n, st) => {
+    const txt = `MADARA VIP MOD\n\nPERIOD NO :- ${p}\nPRIDECTION:- ${pr}\nNUMBER :- ${n}\nSTATUS :- ${st}\nMOD OWNER :- @madarabhai98`;
+    const el = document.createElement('textarea'); el.value = txt; document.body.appendChild(el); el.select();
+    document.execCommand('copy'); document.body.removeChild(el); showToast("Copied!");
+};
 
-        function activateWingo() {
-            isWingoActivated = true;
-            document.getElementById('msg').innerText = "SYSTEM READY V11";
-            document.getElementById('msg').style.color = "#22c55e"; 
-            
-            const wb = document.getElementById('exe-wingo');
-            wb.innerText = "EXECUTE";
-            wb.classList.remove('locked');
-            wb.classList.add('wingo-active');
-            
-            // Optional sound effect
-            // new Audio('https://www.soundjay.com/buttons/sounds/button-3.mp3').play();
-        }
+function updateRing(id, val, total) {
+    const circ = document.getElementById('r-' + id);
+    const p = total === 0 ? 0 : (val / total) * 100;
+    circ.style.strokeDashoffset = 144.5 - (144.5 * p) / 100;
+    document.getElementById('v-' + id).innerText = val;
+    document.getElementById('b-' + id).innerText = val;
+}
 
-        function activateAviator() {
-            isAviatorActivated = true;
-            document.getElementById('av-msg').innerText = "SYSTEM SECURE";
-            document.getElementById('av-msg').style.color = "#22c55e";
-            
-            const ab = document.getElementById('exe-aviator');
-            ab.innerText = "GET PREDICTION";
-            ab.classList.remove('locked');
-            ab.classList.add('aviator-active');
-        }
-
-        // --- PREDICTION LOGIC ---
-
-        function setMode(m) {
-            selectedMode = m;
-            document.querySelectorAll('#wingoPanel .mode-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('m-'+m).classList.add('active');
-        }
-
-        function runWingo() {
-            const res = document.getElementById('res-txt');
-            res.style.display = "none";
-            document.getElementById('msg').innerText = "ANALYZING...";
-            document.getElementById('msg').style.color = "#fff";
-
-            setTimeout(() => {
-                let out = "";
-                if (selectedMode === 'bs') {
-                    out = Math.random() > 0.5 ? "BIG" : "SMALL";
-                    res.style.color = out === "BIG" ? "#fbbf24" : "#22d3ee";
-                } else {
-                    out = Math.floor(Math.random() * 10);
-                    res.style.color = "#fff";
-                }
-                
-                res.innerText = out;
-                res.style.display = "block";
-                document.getElementById('msg').innerText = "PREDICTION SECURE";
-                document.getElementById('msg').style.color = "#22c55e";
-            }, 1000);
-        }
-
-        function runAviator() {
-            const res = document.getElementById('av-res');
-            res.style.display = "none";
-            document.getElementById('av-msg').innerText = "CALCULATING...";
-            document.getElementById('av-msg').style.color = "#fff";
-
-            setTimeout(() => {
-                // Generates random number between 1.10 and 3.50
-                const val = (1.10 + (Math.random() * 2.40)).toFixed(2);
-                res.innerText = val + "x";
-                res.style.display = "block";
-                document.getElementById('av-msg').innerText = "SAFE EXIT POINT";
-                document.getElementById('av-msg').style.color = "#22c55e";
-            }, 1200);
-        }
-
-        // --- UTILITIES ---
-
-        async function fetchPeriod() {
-            // Updated API check with timestamp to prevent caching
-            try {
-                const r = await fetch(`https://draw.ar-lottery01.com/WinGo/WinGo_1M/GetHistoryIssuePage.json?ts=${Date.now()}`);
-                const d = await r.json();
-                if(d?.data?.list) {
-                    const next = (BigInt(d.data.list[0].issueNumber) + 1n).toString();
-                    document.getElementById('period-display').innerText = next;
-                }
-            } catch(e) {
-                // Fallback if API fails
-                if(document.getElementById('period-display').innerText === "LOADING...") {
-                    document.getElementById('period-display').innerText = "CONNECTION ERR";
-                }
-            }
+function updateUI(apiP, apiN, history) {
+    if(pendingEntry && pendingEntry.fullP === apiP) {
+        let actS = apiN >= 5 ? "BIG" : "SMALL";
+        
+        // NEW WIN LOGIC: EITHER Pred matches OR Number matches
+        let isPredWin = (pendingEntry.pS === actS);
+        let isNumWin = (pendingEntry.pN === apiN);
+        
+        let status = "LOSS";
+        if(isPredWin && isNumWin) {
+            status = "JACKPOT"; s.j++;
+        } else if(isPredWin || isNumWin) {
+            status = "WIN"; s.p++;
+        } else {
+            s.f++;
         }
         
-        // Initial fetch and set interval
-        fetchPeriod();
-        setInterval(fetchPeriod, 5000); // Fetch every 5 seconds
-        
-        // Clock
-        setInterval(() => { document.getElementById('av-time').innerText = new Date().toLocaleTimeString(); }, 1000);
+        s.t++;
+        updateRing('p', s.p, s.t); updateRing('f', s.f, s.t); updateRing('j', s.j, s.t); updateRing('t', s.t, s.t);
 
-        // DRAGGABLE LOGIC
-        function makeDrag(el) {
-            let posX = 0, posY = 0, initialX = 0, initialY = 0;
-
-            el.ontouchstart = dragMouseDown;
-
-            function dragMouseDown(e) {
-                e = e || window.event;
-                if (e.type !== 'touchstart') { e.preventDefault(); }
-                
-                initialX = el.offsetLeft;
-                initialY = el.offsetTop;
-                
-                if (e.type === 'touchstart') {
-                    posX = e.touches[0].clientX;
-                    posY = e.touches[0].clientY;
-                } else {
-                    posX = e.clientX;
-                    posY = e.clientY;
-                }
-                
-                document.ontouchend = closeDragElement;
-                document.ontouchmove = elementDrag;
-            }
-
-            function elementDrag(e) {
-                e = e || window.event;
-                
-                let clientX, clientY;
-                if (e.type === 'touchmove') {
-                    clientX = e.touches[0].clientX;
-                    clientY = e.touches[0].clientY;
-                } else {
-                    clientX = e.clientX;
-                    clientY = e.clientY;
-                }
-
-                let deltaX = clientX - posX;
-                let deltaY = clientY - posY;
-                
-                el.style.left = (initialX + deltaX) + "px";
-                el.style.top = (initialY + deltaY) + "px";
-            }
-
-            function closeDragElement() {
-                document.ontouchend = null;
-                document.ontouchmove = null;
-            }
+        const card = document.getElementById('card-' + pendingEntry.dispP);
+        if(card) {
+            const isWin = status !== "LOSS";
+            card.style.borderLeftColor = isWin ? '#3cff95' : '#ff3c3c';
+            card.innerHTML = `<button class="copy-btn" onclick="copyToClip('${pendingEntry.dispP}','${pendingEntry.pS}','${pendingEntry.pN}','${status}')">${SVGS.copy}</button>
+                <div><span class="hist-label">PRD:</span>${pendingEntry.dispP}</div>
+                <div><span class="hist-label">PRED:</span>${pendingEntry.pS} | <span class="hist-label">NUM:</span>${pendingEntry.pN}</div>
+                <div style="color:${isWin?'#3cff95':'#ff3c3c'}; display:flex; align-items:center; font-size:14px;">${isWin ? SVGS.win : SVGS.loss} ${status}</div>`;
         }
-        
-        // Apply dragging to wrappers
-        makeDrag(document.getElementById('wrapperWingo'));
-        makeDrag(document.getElementById('wrapperAviator'));
-    </script>
+    }
+    
+    const result = calculateAsuraV7(history);
+    let nextP = (BigInt(apiP) + 1n).toString();
+    let dispP = nextP.substring(0,4) + "XXXX" + nextP.substring(nextP.length-4);
+    let pS = result.decision === "S" ? "SMALL" : "BIG";
+    let pN = result.decision === "S" ? [1,3,7,9][Math.floor(Math.random()*4)] : [0,2,4,6,8][Math.floor(Math.random()*5)];
+
+    pendingEntry = { fullP: nextP, dispP: dispP, pS: pS, pN: pN };
+    const hList = document.getElementById('history-list');
+    const newCard = document.createElement('div');
+    newCard.id = 'card-' + dispP; newCard.className = 'hist-card';
+    newCard.innerHTML = `<button class="copy-btn" onclick="copyToClip('${dispP}','${pS}','${pN}','PENDING')">${SVGS.copy}</button>
+        <div><span class="hist-label">PRD:</span>${dispP}</div>
+        <div><span class="hist-label">PRED:</span>${pS} | <span class="hist-label">NUM:</span>${pN}</div>
+        <div class="pending-text">ANALYZING...</div>`;
+    hList.prepend(newCard);
+    
+    document.getElementById('p-no').innerText = dispP;
+    document.getElementById('p-text').innerText = pS;
+    document.getElementById('n-val').innerText = pN;
+}
+
+async function fetchAPI() {
+    try {
+        const r = await fetch(`https://draw.ar-lottery01.com/WinGo/WinGo_1M/GetHistoryIssuePage.json?ts=${Date.now()}`);
+        const d = await r.json();
+        if(d?.data?.list?.length > 0) {
+            const L = d.data.list[0];
+            if(L.issueNumber !== lastP) { updateUI(L.issueNumber, parseInt(L.number), d.data.list); lastP = L.issueNumber; }
+        }
+    } catch(e) {}
+}
+
+function tab(t) {
+    document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
+    document.getElementById(t + '-screen').style.display = 'block';
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+}
+setInterval(fetchAPI, 3000); fetchAPI();
+</script>
 </body>
 </html>
