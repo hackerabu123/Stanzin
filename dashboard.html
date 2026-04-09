@@ -1,230 +1,234 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>MADARA VIP MOD</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@900&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MB MOD - PREMIUM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body, html { height: 100%; width: 100%; overflow: hidden; background: #000; }
+        .bg-frame { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; z-index: 1; }
 
-<style>
-* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-body { margin: 0; background: #050505; font-family: system-ui; color: white; font-weight: bold; height: 100vh; overflow: hidden; }
+        #modCard {
+            position: absolute; top: 12%; left: 50%; transform: translateX(-50%);
+            width: 290px; background: #F3E8FF; border-radius: 35px; padding: 18px;
+            text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            z-index: 100; touch-action: none; border: 2.5px solid #A29BFE;
+        }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; cursor: move; }
+        .brand { color: #6C5CE7; font-weight: 900; font-size: 15px; }
+        .user-photo { width: 38px; height: 38px; border-radius: 50%; border: 2px solid #A29BFE; object-fit: cover; }
+        
+        #periodDisplay { 
+            background: #6C5CE7; color: white; padding: 10px; 
+            border-radius: 50px; font-size: 12px; font-weight: 900; 
+            display: inline-block; margin-bottom: 10px; width: 100%;
+        }
+        
+        .result-box { border: 2.5px solid #E0D4FF; border-radius: 28px; padding: 20px 0; margin-bottom: 15px; background: #fff; min-height: 110px; display: flex; align-items: center; justify-content: center; position: relative; overflow: visible; }
 
-/* TOAST */
-#toast { visibility: hidden; min-width: 200px; background: #1a1a1a; color: #fff; text-align: center; border-radius: 20px; padding: 12px; position: fixed; z-index: 2000; left: 50%; bottom: 100px; transform: translateX(-50%); opacity: 0; transition: 0.3s; border: 1.5px solid #7c68ff; }
-#toast.show { visibility: visible; opacity: 1; }
+        .prediction-text {
+            font-size: 40px; font-weight: 900; font-style: italic;
+            background: linear-gradient(to right, #6C5CE7, #A29BFE);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+        }
+        
+        #numDisplay { font-size: 45px; color: #6C5CE7; font-weight: 900; font-style: italic; display: none; }
 
-/* ANIMATIONS */
-@keyframes trophy-bounce { 0%, 100% { transform: translateY(0) scale(1); filter: drop-shadow(0 0 5px #3cff95); } 50% { transform: translateY(-5px) scale(1.1); filter: drop-shadow(0 0 15px #3cff95); } }
-@keyframes loss-shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-3px); } 75% { transform: translateX(3px); } }
-@keyframes gold-glow { 0%, 100% { color: #ffd700; text-shadow: 0 0 5px #ffd700; } 50% { color: #fff; text-shadow: 0 0 15px #ffd700; } }
+        /* Left-Side Shatter Animation */
+        .pixel { position: absolute; background: #6C5CE7; width: 5px; height: 5px; border-radius: 1px; pointer-events: none; opacity: 0; animation: shatterLeft 0.8s ease-out forwards; }
+        @keyframes shatterLeft { 
+            0% { transform: translate(-20px, 0) scale(1); opacity: 1; } 
+            100% { transform: translate(40px, -20px) rotate(45deg) scale(0); opacity: 0; } 
+        }
 
-.screen { height: 100vh; width: 100%; overflow-y: auto; display: none; padding-bottom: 90px; }
-#home-screen { display: block; }
+        .btns { display: flex; flex-direction: column; gap: 8px; }
+        .main-btns { display: flex; gap: 8px; }
+        button { padding: 12px; border-radius: 50px; border: none; font-weight: 900; font-size: 10px; cursor: pointer; }
+        .btn-p { background: #6C5CE7; color: white; flex: 1; }
+        .btn-n { background: #A29BFE; color: white; flex: 1; }
+        .btn-hide { background: #E0D4FF; color: #6C5CE7; width: 100%; }
 
-/* HEADER */
-.header { background: linear-gradient(90deg,#7b67ff,#8c73ff); padding: 14px; display: flex; align-items: center; border-bottom-left-radius: 25px; border-bottom-right-radius: 25px; margin-bottom: 12px; }
-.avatar { width: 45px; height: 45px; border-radius: 50%; background: url('https://i.ibb.co/Hfk3vqyc/images-6.jpg'); background-size: cover; background-position: center; border: 2px solid #fff; margin-right: 12px; }
+        .full-layer { position: absolute; bottom: 0; left: 0; width: 100%; height: 85%; background: #F3E8FF; z-index: 500; display: none; padding: 30px 20px; overflow-y: auto; border-radius: 45px 45px 0 0; }
+        .stats-title { font-size: 28px; color: #3b3486; margin-bottom: 25px; font-weight: 900; }
+        
+        .bar-chart { display: flex; align-items: flex-end; justify-content: space-around; height: 110px; margin-bottom: 35px; padding: 0 10px; }
+        .bar { width: 20px; background: linear-gradient(#A29BFE, #6C5CE7); border-radius: 5px; transition: height 0.5s; }
+        
+        .circle-ui { width: 75px; height: 75px; border: 4px solid #E0D4FF; border-top: 4px solid #6C5CE7; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; color: #3b3486; font-size: 18px; animation: rotate-border 2s linear infinite; margin-bottom: 5px; position: relative; }
+        @keyframes rotate-border { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-.container { padding: 0 12px; }
-
-/* BOXES */
-.compact-box { background: #121212; border-radius: 20px; padding: 12px 18px; display: flex; align-items: center; margin-bottom: 8px; border: 1px solid rgba(124, 104, 255, 0.4); }
-.val-small { background: #7c68ff; border-radius: 12px; padding: 5px 15px; font-size: 15px; min-width: 90px; text-align: center; margin-left: auto; }
-
-/* CIRCLES */
-.circles-line { display: flex; justify-content: space-around; margin: 20px 0; }
-.prog-ring { position: relative; width: 55px; height: 55px; }
-.prog-ring svg { width: 55px; height: 55px; transform: rotate(-90deg); }
-.prog-ring circle { fill: none; stroke-width: 6; stroke-linecap: round; }
-.bg-c { stroke: #1a1a1a; }
-.fg-c { stroke-dasharray: 144.5; stroke-dashoffset: 144.5; transition: stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1); }
-.ring-val { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 12px; font-family: 'Poppins'; }
-
-/* STATS */
-.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.stat-card { padding: 15px 10px; border-radius: 20px; text-align: center; border: 2px solid rgba(255,255,255,0.1); }
-.stat-card .count { font-size: 24px; font-family: 'Poppins'; display: block; margin-top: 5px; }
-.lab-win { background: rgba(60, 255, 149, 0.1); color: #3cff95; border-color: #3cff95; }
-.lab-loss { background: rgba(255, 60, 60, 0.1); color: #ff3c3c; border-color: #ff3c3c; }
-.lab-jack { background: rgba(124, 104, 255, 0.1); color: #b39dff; border-color: #7c68ff; }
-.lab-total { background: rgba(255, 255, 255, 0.05); color: #ffffff; border-color: #ffffff; }
-
-/* HISTORY */
-.hist-card { background: #121212; border-radius: 18px; padding: 16px; margin-bottom: 12px; position: relative; border-left: 6px solid #7c68ff; }
-.hist-label { color: #7c68ff; font-size: 11px; margin-right: 5px; opacity: 0.8; }
-.st-icon { width: 24px; height: 24px; vertical-align: middle; margin-right: 8px; }
-.win-trophy { fill: #3cff95; animation: trophy-bounce 1.5s infinite; }
-.loss-x { fill: #ff3c3c; animation: loss-shake 0.5s infinite; }
-.pending-text { animation: gold-glow 1.5s infinite; font-size: 14px; }
-
-.copy-btn { position: absolute; right: 10px; top: 10px; background: rgba(124, 104, 255, 0.2); border: none; padding: 8px; border-radius: 10px; }
-.copy-btn svg { width: 18px; fill: #7c68ff; }
-
-/* NAV */
-.nav { position: fixed; bottom: 0; width: 100%; background: #d7ccff; display: flex; justify-content: space-around; padding: 12px 0; border-top-left-radius: 25px; border-top-right-radius: 25px; z-index: 1000; }
-.nav-item svg { width: 26px; height: 26px; fill: #6b5cff; }
-.nav-item.active svg { fill: #3f2bff; transform: scale(1.1); }
-</style>
+        /* Navigation Bar - Light Purple Updated */
+        #bottomNav { position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%); width: 310px; height: 75px; background: #F3E8FF; border-radius: 50px; display: flex; justify-content: space-around; align-items: center; box-shadow: 0 10px 35px rgba(0,0,0,0.4); z-index: 600; border: 2px solid #A29BFE; }
+        .nav-item { text-align: center; color: #A29BFE; flex: 1; font-size: 9px; font-weight: 900; cursor: pointer; }
+        .nav-item.active { color: #6C5CE7; }
+        .nav-item svg { width: 22px; height: 22px; display: block; margin: 0 auto 4px; fill: currentColor; }
+        
+        #hideIcon { position: absolute; top: 100px; right: 20px; width: 60px; height: 60px; background: #F3E8FF; border-radius: 50%; display: none; align-items: center; justify-content: center; border: 3px solid #A29BFE; z-index: 700; overflow: hidden; }
+        #hideIcon img { width: 100%; height: 100%; object-fit: cover; }
+    </style>
 </head>
-
 <body>
-<div id="toast">Copied</div>
 
-<div id="home-screen" class="screen">
-    <div class="header">
-        <div class="avatar"></div>
-        <div>MADARA VIP MOD<br><span style="font-size:10px; opacity:0.8;">ASURA V7 • UCHIHA ENGINE</span></div>
-    </div>
-    <div class="container">
-        <div class="compact-box"><div>PERIOD NO</div><div style="margin-left:auto; color:#7c68ff;" id="p-no">...</div></div>
-        <div class="compact-box"><div>PREDICTION</div><div class="val-small" id="p-text">WAIT</div></div>
-        <div class="compact-box"><div>NUMBER</div><div class="val-small" id="n-val">?</div></div>
-        
-        <div class="circles-line">
-            <div class="prog-ring"><svg><circle class="bg-c" cx="27.5" cy="27.5" r="23"></circle><circle id="r-p" class="fg-c" cx="27.5" cy="27.5" r="23" stroke="#3cff95"></circle></svg><div class="ring-val" id="v-p">0</div></div>
-            <div class="prog-ring"><svg><circle class="bg-c" cx="27.5" cy="27.5" r="23"></circle><circle id="r-f" class="fg-c" cx="27.5" cy="27.5" r="23" stroke="#ff3c3c"></circle></svg><div class="ring-val" id="v-f">0</div></div>
-            <div class="prog-ring"><svg><circle class="bg-c" cx="27.5" cy="27.5" r="23"></circle><circle id="r-j" class="fg-c" cx="27.5" cy="27.5" r="23" stroke="#7c68ff"></circle></svg><div class="ring-val" id="v-j">0</div></div>
-            <div class="prog-ring"><svg><circle class="bg-c" cx="27.5" cy="27.5" r="23"></circle><circle id="r-t" class="fg-c" cx="27.5" cy="27.5" r="23" stroke="#ffffff"></circle></svg><div class="ring-val" id="v-t">0</div></div>
+    <iframe class="bg-frame" src="https://www.jaiclub01.com/#/register?invitationCode=28262582138"></iframe>
+
+    <div id="modCard">
+        <div class="header" id="cardHandle">
+            <span class="brand">MB ANALYTICS</span>
+            <img src="https://i.ibb.co/Hfk3vqyc/images-6.jpg" class="user-photo">
         </div>
-
-        <div class="stats-grid">
-            <div class="stat-card lab-win">WIN<span class="count" id="b-p">0</span></div>
-            <div class="stat-card lab-loss">LOSS<span class="count" id="b-f">0</span></div>
-            <div class="stat-card lab-jack">JACKPOT<span class="count" id="b-j">0</span></div>
-            <div class="stat-card lab-total">TOTAL<span class="count" id="b-t">0</span></div>
+        <div id="periodDisplay">PERIOD :- LOADING...</div>
+        <div class="result-box" id="pBox">
+            <div id="mainPrediction" class="prediction-text">WAIT</div>
+            <div id="numDisplay">?</div>
+        </div>
+        <div class="btns">
+            <div class="main-btns">
+                <button class="btn-p" onclick="setMode('pred')">PREDICTION</button>
+                <button class="btn-n" onclick="setMode('num')">NUMBER</button>
+            </div>
+            <button class="btn-hide" onclick="toggleHide(true)">HIDE PANEL</button>
         </div>
     </div>
-</div>
 
-<div id="game-screen" class="screen"><iframe src="https://www.jaiclub01.com/#/register?invitationCode=28262582138" style="width:100%; height:100%; border:none;"></iframe></div>
-<div id="history-screen" class="screen"><div class="header">ANALYTICS LOG</div><div class="container" id="history-list"></div></div>
+    <div id="winRateLayer" class="full-layer">
+        <h1 class="stats-title">ANALYTICS</h1>
+        <div class="bar-chart">
+            <div class="bar" style="height: 60%"></div>
+            <div class="bar" style="height: 40%"></div>
+            <div class="bar" style="height: 80%"></div>
+            <div class="bar" style="height: 50%"></div>
+            <div class="bar" style="height: 70%"></div>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+            <div style="text-align:center;"><div class="circle-ui"><span id="bigCount">0</span></div><p style="font-size:10px; font-weight:900; color:#6C5CE7;">BIG</p></div>
+            <div style="text-align:center;"><div class="circle-ui"><span id="smallCount">0</span></div><p style="font-size:10px; font-weight:900; color:#6C5CE7;">SMALL</p></div>
+            <div style="text-align:center;"><div class="circle-ui"><span id="totalCount">0</span></div><p style="font-size:10px; font-weight:900; color:#6C5CE7;">TOTAL</p></div>
+        </div>
+    </div>
 
-<div class="nav">
-    <div class="nav-item active" onclick="tab('home')"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></div>
-    <div class="nav-item" onclick="tab('game')"><svg viewBox="0 0 24 24"><path d="M21 6H3c-1.1 0-2 .9-2 2v6c0 1.1.9 2 2 2h3l2 3 2-3h4l2 3 2-3h3c1.1 0 2-.9 2-2V8z"/></svg></div>
-    <div class="nav-item" onclick="tab('history')"><svg viewBox="0 0 24 24"><path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg></div>
-</div>
+    <div id="historyLayer" class="full-layer">
+        <h1 class="stats-title">HISTORY</h1>
+        <div id="historyList"></div>
+    </div>
 
-<script>
-let lastP = null, pendingEntry = null, s = { j:0, p:0, f:0, t:0 };
+    <div id="hideIcon" onclick="toggleHide(false)">
+        <img src="https://i.ibb.co/Hfk3vqyc/images-6.jpg">
+    </div>
 
-const SVGS = {
-    win: `<svg class="st-icon win-trophy" viewBox="0 0 24 24"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v3c0 2.55 1.92 4.63 4.39 4.94A5.01 5.01 0 0 0 11 15.9V19H7v2h10v-2h-4v-3.1a5.01 5.01 0 0 0 3.61-1.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"/></svg>`,
-    loss: `<svg class="st-icon loss-x" viewBox="0 0 24 24"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"/></svg>`,
-    copy: `<svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>`
-};
+    <div id="bottomNav">
+        <div class="nav-item active" id="btnHack" onclick="showLayer('hack')"><svg viewBox="0 0 24 24"><path d="M13 10V3L4 14H11V21L20 10H13Z"/></svg><span>HACK</span></div>
+        <div class="nav-item" id="btnHist" onclick="showLayer('history')"><svg viewBox="0 0 24 24"><path d="M13 3C8 3 4 7 4 12H1L5 16L9 12H6C6 8.1 9.1 5 13 5C16.9 5 20 8.1 20 12C20 15.9 16.9 19 13 19C11.1 19 9.3 18.2 8.1 16.9L6.6 18.4C8.2 20 10.5 21 13 21C18 21 22 17 22 12C22 7 18 3 13 3Z"/></svg><span>HISTORY</span></div>
+        <div class="nav-item" id="btnWin" onclick="showLayer('winrate')"><svg viewBox="0 0 24 24"><path d="M11 2V22C5.9 21.5 2 17.2 2 12C2 6.8 5.9 2.5 11 2M13 2C18.1 2.5 22 6.8 22 12C22 12.7 21.9 13.4 21.8 14.1L13 11.1V2M13 13.3L21.3 16C20.2 18.6 17.9 20.5 15.2 21.4L13 13.3Z"/></svg><span>ANALYTICS</span></div>
+    </div>
 
-function calculateAsuraV7(history) {
-    if (!history || history.length < 10) return { decision: Math.random() > 0.5 ? "B" : "S" };
-    const data = history.map(h => parseInt(h.number) >= 5 ? "BIG" : "SMALL").reverse();
-    let score = 0;
-    let order2 = {};
-    for (let i = 2; i < data.length; i++) {
-        let state = data[i-2] + "_" + data[i-1];
-        if (!order2[state]) order2[state] = { BIG: 0, SMALL: 0 };
-        order2[state][data[i]]++;
-    }
-    let cur = data[data.length-2] + "_" + data[data.length-1];
-    if (order2[cur]) {
-        let b = order2[cur].BIG, s = order2[cur].SMALL;
-        if ((b + s) > 0) score += ((s - b) / (b + s)) * 4;
-    }
-    let last20 = data.slice(-20);
-    let sC = last20.filter(x => x === "SMALL").length, bC = 20 - sC;
-    score += ((sC - bC) / 20) * 3;
-    let probSmall = 1 / (1 + Math.exp(-score));
-    return { decision: probSmall > 0.5 ? "S" : "B" };
-}
+    <script>
+        let currentPeriod = "";
+        let lastLoggedPeriod = "";
+        let stats = { big: 0, small: 0, total: 0 };
+        let activePred = { p: "WAIT", n: "?" };
+        let currentMode = 'pred';
 
-function showToast(msg) {
-    const t = document.getElementById("toast"); t.innerText = msg; t.className = "show";
-    setTimeout(() => { t.className = ""; }, 2000);
-}
+        function formatPeriod(p) { return p.substring(0, 3) + "XXXXXX" + p.substring(p.length - 3); }
 
-window.copyToClip = (p, pr, n, st) => {
-    const txt = `MADARA VIP MOD\n\nPERIOD NO :- ${p}\nPRIDECTION:- ${pr}\nNUMBER :- ${n}\nSTATUS :- ${st}\nMOD OWNER :- @madarabhai98`;
-    const el = document.createElement('textarea'); el.value = txt; document.body.appendChild(el); el.select();
-    document.execCommand('copy'); document.body.removeChild(el); showToast("Copied!");
-};
+        function triggerShatter() {
+            const b = document.getElementById('pBox');
+            if (currentMode !== 'pred') return;
+            for(let i=0; i<12; i++) {
+                const p = document.createElement('div');
+                p.className = 'pixel';
+                p.style.top = (40 + Math.random()*30) + 'px';
+                p.style.left = (60 + Math.random()*20) + 'px';
+                b.appendChild(p);
+                setTimeout(() => p.remove(), 800);
+            }
+        }
 
-function updateRing(id, val, total) {
-    const circ = document.getElementById('r-' + id);
-    const p = total === 0 ? 0 : (val / total) * 100;
-    circ.style.strokeDashoffset = 144.5 - (144.5 * p) / 100;
-    document.getElementById('v-' + id).innerText = val;
-    document.getElementById('b-' + id).innerText = val;
-}
+        function updateLogic() {
+            const now = new Date();
+            const kolkata = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + (3600000 * 5.5));
+            let elapsed = (kolkata.getHours() * 60 + kolkata.getMinutes()) - (5 * 60 + 29);
+            if (elapsed < 0) elapsed = 0;
+            const dateStr = kolkata.getFullYear() + String(kolkata.getMonth() + 1).padStart(2, '0') + String(kolkata.getDate()).padStart(2, '0');
+            currentPeriod = `${dateStr}100001${String(elapsed).padStart(4, '0')}`;
 
-function updateUI(apiP, apiN, history) {
-    if(pendingEntry && pendingEntry.fullP === apiP) {
-        let actS = apiN >= 5 ? "BIG" : "SMALL";
-        
-        // NEW WIN LOGIC: EITHER Pred matches OR Number matches
-        let isPredWin = (pendingEntry.pS === actS);
-        let isNumWin = (pendingEntry.pN === apiN);
-        
-        let status = "LOSS";
-        if(isPredWin && isNumWin) {
-            status = "JACKPOT"; s.j++;
-        } else if(isPredWin || isNumWin) {
-            status = "WIN"; s.p++;
-        } else {
-            s.f++;
+            document.getElementById('periodDisplay').innerText = "PERIOD :- " + formatPeriod(currentPeriod);
+
+            if (currentPeriod !== lastLoggedPeriod) {
+                const preds = ["BIG", "SMALL"];
+                activePred.p = preds[Math.floor(Math.random() * preds.length)];
+                activePred.n = Math.floor(Math.random() * 10);
+                
+                stats.total++;
+                if(activePred.p === "BIG") stats.big++; else stats.small++;
+                
+                updateStatsUI();
+                addHistory(currentPeriod, activePred.p, activePred.n);
+                lastLoggedPeriod = currentPeriod;
+                
+                triggerShatter();
+                showUIResult(currentMode);
+            }
+        }
+
+        function setMode(m) {
+            currentMode = m;
+            if (m === 'pred') triggerShatter();
+            showUIResult(m);
+        }
+
+        function showUIResult(mode) {
+            const pTxt = document.getElementById('mainPrediction');
+            const nTxt = document.getElementById('numDisplay');
+            if(mode === 'pred') { pTxt.style.display = "block"; nTxt.style.display = "none"; pTxt.innerText = activePred.p; }
+            else { pTxt.style.display = "none"; nTxt.style.display = "block"; nTxt.innerText = activePred.n; }
+        }
+
+        function updateStatsUI() {
+            document.getElementById('bigCount').innerText = stats.big;
+            document.getElementById('smallCount').innerText = stats.small;
+            document.getElementById('totalCount').innerText = stats.total;
+            document.querySelectorAll('.bar').forEach(b => b.style.height = (Math.random()*60+20)+'%');
+        }
+
+        function addHistory(period, p, n) {
+            const hList = document.getElementById('historyList');
+            const item = document.createElement('div');
+            item.style = "background:#fff; border:1px solid #E0D4FF; border-radius:25px; padding:15px 20px; display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;";
+            item.innerHTML = `<div><div style="font-size:12px; color:#A29BFE; font-weight:900;">${formatPeriod(period)}</div><div style="font-size:20px; font-weight:900; color:#6C5CE7;">${p} ${n}</div></div><div style="color:#b5b0f5; font-size:10px; font-weight:900;">SECURE</div>`;
+            hList.prepend(item);
+        }
+
+        function showLayer(t) {
+            document.getElementById('historyLayer').style.display = t === 'history' ? 'block' : 'none';
+            document.getElementById('winRateLayer').style.display = t === 'winrate' ? 'block' : 'none';
+            document.getElementById('modCard').style.display = t === 'hack' ? 'block' : 'none';
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            const id = t === 'winrate' ? 'btnWin' : (t === 'history' ? 'btnHist' : 'btnHack');
+            document.getElementById(id).classList.add('active');
+        }
+
+        function toggleHide(h) {
+            document.getElementById('modCard').style.display = h ? 'none' : 'block';
+            document.getElementById('hideIcon').style.display = h ? 'flex' : 'none';
+        }
+
+        function makeMoveable(el, hId) {
+            let p1=0, p2=0, p3=0, p4=0, h = document.getElementById(hId) || el;
+            h.onpointerdown = (e) => {
+                p3 = e.clientX; p4 = e.clientY;
+                document.onpointermove = (ev) => {
+                    p1 = p3 - ev.clientX; p2 = p4 - ev.clientY; p3 = ev.clientX; p4 = ev.clientY;
+                    el.style.top = (el.offsetTop - p2) + "px"; el.style.left = (el.offsetLeft - p1) + "px"; el.style.transform = "none";
+                };
+                document.onpointerup = () => document.onpointermove = null;
+            };
         }
         
-        s.t++;
-        updateRing('p', s.p, s.t); updateRing('f', s.f, s.t); updateRing('j', s.j, s.t); updateRing('t', s.t, s.t);
-
-        const card = document.getElementById('card-' + pendingEntry.dispP);
-        if(card) {
-            const isWin = status !== "LOSS";
-            card.style.borderLeftColor = isWin ? '#3cff95' : '#ff3c3c';
-            card.innerHTML = `<button class="copy-btn" onclick="copyToClip('${pendingEntry.dispP}','${pendingEntry.pS}','${pendingEntry.pN}','${status}')">${SVGS.copy}</button>
-                <div><span class="hist-label">PRD:</span>${pendingEntry.dispP}</div>
-                <div><span class="hist-label">PRED:</span>${pendingEntry.pS} | <span class="hist-label">NUM:</span>${pendingEntry.pN}</div>
-                <div style="color:${isWin?'#3cff95':'#ff3c3c'}; display:flex; align-items:center; font-size:14px;">${isWin ? SVGS.win : SVGS.loss} ${status}</div>`;
-        }
-    }
-    
-    const result = calculateAsuraV7(history);
-    let nextP = (BigInt(apiP) + 1n).toString();
-    let dispP = nextP.substring(0,4) + "XXXX" + nextP.substring(nextP.length-4);
-    let pS = result.decision === "S" ? "SMALL" : "BIG";
-    let pN = result.decision === "S" ? [1,3,7,9][Math.floor(Math.random()*4)] : [0,2,4,6,8][Math.floor(Math.random()*5)];
-
-    pendingEntry = { fullP: nextP, dispP: dispP, pS: pS, pN: pN };
-    const hList = document.getElementById('history-list');
-    const newCard = document.createElement('div');
-    newCard.id = 'card-' + dispP; newCard.className = 'hist-card';
-    newCard.innerHTML = `<button class="copy-btn" onclick="copyToClip('${dispP}','${pS}','${pN}','PENDING')">${SVGS.copy}</button>
-        <div><span class="hist-label">PRD:</span>${dispP}</div>
-        <div><span class="hist-label">PRED:</span>${pS} | <span class="hist-label">NUM:</span>${pN}</div>
-        <div class="pending-text">ANALYZING...</div>`;
-    hList.prepend(newCard);
-    
-    document.getElementById('p-no').innerText = dispP;
-    document.getElementById('p-text').innerText = pS;
-    document.getElementById('n-val').innerText = pN;
-}
-
-async function fetchAPI() {
-    try {
-        const r = await fetch(`https://draw.ar-lottery01.com/WinGo/WinGo_1M/GetHistoryIssuePage.json?ts=${Date.now()}`);
-        const d = await r.json();
-        if(d?.data?.list?.length > 0) {
-            const L = d.data.list[0];
-            if(L.issueNumber !== lastP) { updateUI(L.issueNumber, parseInt(L.number), d.data.list); lastP = L.issueNumber; }
-        }
-    } catch(e) {}
-}
-
-function tab(t) {
-    document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
-    document.getElementById(t + '-screen').style.display = 'block';
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    event.currentTarget.classList.add('active');
-}
-setInterval(fetchAPI, 3000); fetchAPI();
-</script>
+        makeMoveable(document.getElementById("modCard"), "cardHandle");
+        setInterval(updateLogic, 1000);
+    </script>
 </body>
-</html>
+                                                                                              </html>
