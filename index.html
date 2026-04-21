@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>STANZIN V6 - HALF BLUR EDITION</title>
+    <title>STANZIN V6 - REDIRECT EDITION</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.9.3/dist/dotlottie-wc.js" type="module"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -26,8 +26,10 @@
             box-shadow: 4px 4px 8px #b8bec9, -4px -4px 8px #ffffff;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             gap: 5px; font-size: 0.8rem; font-weight: 900;
-            border: 1px solid rgba(255,255,255,0.4); color: #555; cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.4); color: #555; cursor: pointer; transition: 0.3s;
         }
+
+        .item-btn:active { box-shadow: inset 4px 4px 8px #b8bec9, inset -4px -4px 8px #ffffff; }
 
         .label-text { font-size: 0.55rem; color: #888; text-transform: uppercase; font-weight: 800; }
         .val-text { color: #6c5ce7; font-size: 0.7rem; text-align: center; }
@@ -39,7 +41,6 @@
             grid-column: span 2; border: none; height: 52px; font-size: 0.9rem; border-radius: 15px; margin-top: 5px; 
         }
 
-        /* TIMER BOX WITH HALF-CUT GLASS BLUR */
         .glass-timer {
             grid-column: span 2; position: relative; 
             background: #e0e5ec; border-radius: 20px; padding: 30px 20px; 
@@ -49,20 +50,17 @@
             min-height: 130px;
         }
 
-        /* TIMER DIGITS (Layer below glass) */
         .timer-val { 
             font-size: 3.2rem; font-weight: 900; color: #6c5ce7; 
             position: relative; z-index: 1; letter-spacing: 1px;
         }
 
-        /* BOTTOM GLASS OVERLAY (Layer above digits) */
         .glass-timer::after {
             content: ""; position: absolute; 
-            bottom: 0; left: 0; width: 100%; height: 50%; /* Digits ke beech tak */
+            bottom: 0; left: 0; width: 100%; height: 50%;
             background: rgba(255, 255, 255, 0.25); 
-            backdrop-filter: blur(12px); /* Isse digits bottom se blur dikhenge */
-            -webkit-backdrop-filter: blur(12px);
-            border-top: 1.5px solid rgba(255, 255, 255, 0.5); /* Glass cut line */
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border-top: 1.5px solid rgba(255, 255, 255, 0.5);
             z-index: 10; pointer-events: none;
             border-radius: 0 0 20px 20px;
         }
@@ -81,12 +79,19 @@
 <div class="main-container">
     <dotlottie-wc src="https://lottie.host/f16e0f02-28cf-4a6e-97c3-f2d9db69b089/8Hyd2JGMzt.lottie" style="width: 180px; height: 180px" autoplay loop></dotlottie-wc>
 
-    <div class="grid-box" id="ui-box"></div>
+    <div class="grid-box" id="ui-box">
+        <div style="grid-column: span 2; text-align: center; padding: 20px;">
+            <i class="fas fa-spinner fa-spin" style="color: #6c5ce7; font-size: 2rem;"></i>
+        </div>
+    </div>
 
     <img src="https://cdni.iconscout.com/illustration/premium/thumb/web-development-3454628-2918517.png" class="dev-img">
 </div>
 
 <script>
+    // --- SETTINGS ---
+    const REDIRECT_URL = "https://hackerabu123.github.io/Hululu/"; // SUCCESS HONE PE IS LINK PE JAYEGA
+
     const firebaseConfig = {
         apiKey: "AIzaSyDGF0GEonMgT8HjIqZux4IpkpjUjTwCl6k",
         authDomain: "the-kargil-rock.firebaseapp.com",
@@ -109,15 +114,18 @@
     async function init() {
         const devID = getDeviceID();
         const savedKey = localStorage.getItem('stanzin_saved_key') || "";
-        showLoginPage(devID, savedKey);
-
+        
         if (savedKey) {
             database.ref('keys/' + savedKey).once('value', (snap) => {
                 const data = snap.val();
                 if (data && data.status === "ON" && (data.deviceID === "" || data.deviceID === devID) && Date.now() < data.expiry) {
                     showStatusPage(savedKey, devID, data.expiry);
+                } else {
+                    showLoginPage(devID, savedKey);
                 }
             });
+        } else {
+            showLoginPage(devID, "");
         }
     }
 
@@ -143,9 +151,19 @@
             if(data && data.status === "ON" && (data.deviceID === "" || data.deviceID === devID) && Date.now() < data.expiry) {
                 if(data.deviceID === "") await database.ref('keys/' + key).update({deviceID: devID});
                 localStorage.setItem('stanzin_saved_key', key);
-                showStatusPage(key, devID, data.expiry);
-            } else { alert("Key Issue!"); btn.innerHTML = 'LOGIN'; }
-        } catch(e) { alert("Error!"); btn.innerHTML = 'LOGIN'; }
+                
+                // --- SUCCESS ACTION ---
+                alert("Login Successful! Redirecting...");
+                window.location.href = REDIRECT_URL; 
+                
+            } else { 
+                alert("Invalid Key or Expired!"); 
+                btn.innerHTML = '<i class="fas fa-sign-in-alt"></i><span class="val-text" style="color:white;">LOGIN</span>'; 
+            }
+        } catch(e) { 
+            alert("Error!"); 
+            btn.innerHTML = 'LOGIN'; 
+        }
     }
 
     function showStatusPage(key, id, expiry) {
@@ -156,23 +174,25 @@
             </div>
             <div class="item-btn"><span class="label-text">Key</span><span class="val-text">${key}</span></div>
             <div class="item-btn"><span class="label-text">Device</span><span class="val-text">${id}</span></div>
-            <button class="item-btn start-btn" onclick="window.location.href='dashboard.html'"><i class="fas fa-bolt"></i>&nbsp; START MOD</button>
+            <button class="item-btn start-btn" onclick="window.location.href='${REDIRECT_URL}'"><i class="fas fa-bolt"></i>&nbsp; START MOD</button>
         `;
         startTimer(expiry);
     }
 
     function startTimer(expiry) {
-        setInterval(() => {
+        const timerInterval = setInterval(() => {
             const diff = expiry - Date.now();
             const el = document.getElementById('timer');
-            if(!el) return;
-            if(diff <= 0) { el.innerText = "EXPIRED"; return; }
+            if(!el) { clearInterval(timerInterval); return; }
+            if(diff <= 0) { el.innerText = "EXPIRED"; clearInterval(timerInterval); return; }
+            
             const h = Math.floor(diff/3600000).toString().padStart(2,'0');
             const m = Math.floor((diff%3600000)/60000).toString().padStart(2,'0');
             const s = Math.floor((diff%60000)/1000).toString().padStart(2,'0');
             el.innerText = `${h}:${m}:${s}`;
         }, 1000);
     }
+    
     window.onload = init;
 </script>
 </body>
