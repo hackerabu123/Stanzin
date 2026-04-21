@@ -73,7 +73,7 @@ body { margin: 0; background: #050505; font-family: system-ui; color: white; fon
 <div id="home-screen" class="screen">
     <div class="header">
         <div class="avatar"></div>
-        <div>MADARA VIP MOD<br><span style="font-size:10px; opacity:0.8;">ASURA V7 • UCHIHA ENGINE</span></div>
+        <div>MADARA VIP MOD<br><span style="font-size:10px; opacity:0.8;">ASURA V7 • MAJORITY TREND</span></div>
     </div>
     <div class="container">
         <div class="compact-box"><div>PERIOD NO</div><div style="margin-left:auto; color:#7c68ff;" id="p-no">...</div></div>
@@ -114,26 +114,22 @@ const SVGS = {
     copy: `<svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>`
 };
 
+/**
+ * TREND CALCULATION
+ */
 function calculateAsuraV7(history) {
-    if (!history || history.length < 10) return { decision: Math.random() > 0.5 ? "B" : "S" };
-    const data = history.map(h => parseInt(h.number) >= 5 ? "BIG" : "SMALL").reverse();
-    let score = 0;
-    let order2 = {};
-    for (let i = 2; i < data.length; i++) {
-        let state = data[i-2] + "_" + data[i-1];
-        if (!order2[state]) order2[state] = { BIG: 0, SMALL: 0 };
-        order2[state][data[i]]++;
-    }
-    let cur = data[data.length-2] + "_" + data[data.length-1];
-    if (order2[cur]) {
-        let b = order2[cur].BIG, s = order2[cur].SMALL;
-        if ((b + s) > 0) score += ((s - b) / (b + s)) * 4;
-    }
-    let last20 = data.slice(-20);
-    let sC = last20.filter(x => x === "SMALL").length, bC = 20 - sC;
-    score += ((sC - bC) / 20) * 3;
-    let probSmall = 1 / (1 + Math.exp(-score));
-    return { decision: probSmall > 0.5 ? "S" : "B" };
+    if (!history || history.length < 3) return { decision: "B", number: 5 };
+    const lastThree = history.slice(0, 3).map(item => parseInt(item.number));
+    const trends = lastThree.map(num => (num >= 5 ? "BIG" : "SMALL"));
+    const bigCount = trends.filter(x => x === "BIG").length;
+    let finalPrediction = bigCount >= 2 ? "B" : "S";
+
+    const BIG_SET = [5, 6, 7, 8, 9];
+    const SMALL_SET = [0, 1, 2, 3, 4];
+    const targetSet = (finalPrediction === "B") ? BIG_SET : SMALL_SET;
+    let suggestedNumber = targetSet[Math.floor(Math.random() * targetSet.length)];
+
+    return { decision: finalPrediction, number: suggestedNumber };
 }
 
 function showToast(msg) {
@@ -142,7 +138,7 @@ function showToast(msg) {
 }
 
 window.copyToClip = (p, pr, n, st) => {
-    const txt = `MADARA VIP MOD\n\nPERIOD NO :- ${p}\nPRIDECTION:- ${pr}\nNUMBER :- ${n}\nSTATUS :- ${st}\nMOD OWNER :- @madarabhai98`;
+    const txt = `MADARA VIP MOD\n\nPERIOD NO :- ${p}\nPREDICTION:- ${pr}\nNUMBER :- ${n}\nSTATUS :- ${st}\nMOD OWNER :- @madarabhai98`;
     const el = document.createElement('textarea'); el.value = txt; document.body.appendChild(el); el.select();
     document.execCommand('copy'); document.body.removeChild(el); showToast("Copied!");
 };
@@ -159,18 +155,16 @@ function updateUI(apiP, apiN, history) {
     if(pendingEntry && pendingEntry.fullP === apiP) {
         let actS = apiN >= 5 ? "BIG" : "SMALL";
         
-        // NEW WIN LOGIC: EITHER Pred matches OR Number matches
-        let isPredWin = (pendingEntry.pS === actS);
-        let isNumWin = (pendingEntry.pN === apiN);
-        
+        // --- UPDATED JACKPOT LOGIC ---
         let status = "LOSS";
-        if(isPredWin && isNumWin) {
+        if(pendingEntry.pN === apiN) {
             status = "JACKPOT"; s.j++;
-        } else if(isPredWin || isNumWin) {
+        } else if(pendingEntry.pS === actS) {
             status = "WIN"; s.p++;
         } else {
             s.f++;
         }
+        // -----------------------------
         
         s.t++;
         updateRing('p', s.p, s.t); updateRing('f', s.f, s.t); updateRing('j', s.j, s.t); updateRing('t', s.t, s.t);
@@ -178,11 +172,11 @@ function updateUI(apiP, apiN, history) {
         const card = document.getElementById('card-' + pendingEntry.dispP);
         if(card) {
             const isWin = status !== "LOSS";
-            card.style.borderLeftColor = isWin ? '#3cff95' : '#ff3c3c';
+            card.style.borderLeftColor = (status === "JACKPOT") ? '#7c68ff' : (isWin ? '#3cff95' : '#ff3c3c');
             card.innerHTML = `<button class="copy-btn" onclick="copyToClip('${pendingEntry.dispP}','${pendingEntry.pS}','${pendingEntry.pN}','${status}')">${SVGS.copy}</button>
                 <div><span class="hist-label">PRD:</span>${pendingEntry.dispP}</div>
                 <div><span class="hist-label">PRED:</span>${pendingEntry.pS} | <span class="hist-label">NUM:</span>${pendingEntry.pN}</div>
-                <div style="color:${isWin?'#3cff95':'#ff3c3c'}; display:flex; align-items:center; font-size:14px;">${isWin ? SVGS.win : SVGS.loss} ${status}</div>`;
+                <div style="color:${(status === 'JACKPOT') ? '#b39dff' : (isWin ? '#3cff95' : '#ff3c3c')}; display:flex; align-items:center; font-size:14px;">${isWin ? SVGS.win : SVGS.loss} ${status}</div>`;
         }
     }
     
@@ -190,7 +184,7 @@ function updateUI(apiP, apiN, history) {
     let nextP = (BigInt(apiP) + 1n).toString();
     let dispP = nextP.substring(0,4) + "XXXX" + nextP.substring(nextP.length-4);
     let pS = result.decision === "S" ? "SMALL" : "BIG";
-    let pN = result.decision === "S" ? [1,3,7,9][Math.floor(Math.random()*4)] : [0,2,4,6,8][Math.floor(Math.random()*5)];
+    let pN = result.number;
 
     pendingEntry = { fullP: nextP, dispP: dispP, pS: pS, pN: pN };
     const hList = document.getElementById('history-list');
@@ -199,7 +193,7 @@ function updateUI(apiP, apiN, history) {
     newCard.innerHTML = `<button class="copy-btn" onclick="copyToClip('${dispP}','${pS}','${pN}','PENDING')">${SVGS.copy}</button>
         <div><span class="hist-label">PRD:</span>${dispP}</div>
         <div><span class="hist-label">PRED:</span>${pS} | <span class="hist-label">NUM:</span>${pN}</div>
-        <div class="pending-text">ANALYZING...</div>`;
+        <div class="pending-text">WAITING FOR RESULT...</div>`;
     hList.prepend(newCard);
     
     document.getElementById('p-no').innerText = dispP;
@@ -213,7 +207,10 @@ async function fetchAPI() {
         const d = await r.json();
         if(d?.data?.list?.length > 0) {
             const L = d.data.list[0];
-            if(L.issueNumber !== lastP) { updateUI(L.issueNumber, parseInt(L.number), d.data.list); lastP = L.issueNumber; }
+            if(L.issueNumber !== lastP) { 
+                updateUI(L.issueNumber, parseInt(L.number), d.data.list); 
+                lastP = L.issueNumber; 
+            }
         }
     } catch(e) {}
 }
@@ -224,7 +221,9 @@ function tab(t) {
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     event.currentTarget.classList.add('active');
 }
-setInterval(fetchAPI, 3000); fetchAPI();
+
+setInterval(fetchAPI, 3000); 
+fetchAPI();
 </script>
 </body>
 </html>
