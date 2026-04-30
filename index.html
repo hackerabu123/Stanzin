@@ -10,78 +10,420 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background: #e0e5ec; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; color: #444; }
-        
-        .main-container { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 20px; align-items: center; }
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
 
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: 'Poppins', sans-serif; 
+        }
+
+        body { 
+            background: linear-gradient(135deg, #f5f0ff 0%, #ede0ff 30%, #e0d4ff 60%, #f0e6ff 100%);
+            min-height: 100vh; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            padding: 20px; 
+            color: #444;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated background particles */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(167, 139, 250, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(192, 132, 252, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(216, 180, 254, 0.1) 0%, transparent 60%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .main-container { 
+            width: 100%; 
+            max-width: 420px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 20px; 
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Floating card effect */
         .grid-box { 
-            background: #e0e5ec; padding: 20px; border-radius: 25px; 
-            box-shadow: 10px 10px 20px #b8bec9, -10px -10px 20px #ffffff;
-            display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%;
+            background: rgba(255, 255, 255, 0.45);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 25px; 
+            border-radius: 30px; 
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 
+                0 8px 32px rgba(139, 92, 246, 0.12),
+                0 2px 8px rgba(139, 92, 246, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 15px; 
+            width: 100%;
+            animation: floatIn 0.6s ease-out;
         }
-        
+
+        @keyframes floatIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .item-btn {
-            background: #e0e5ec; padding: 15px 10px; border-radius: 15px;
-            box-shadow: 4px 4px 8px #b8bec9, -4px -4px 8px #ffffff;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            gap: 5px; font-size: 0.8rem; font-weight: 900;
-            border: 1px solid rgba(255,255,255,0.4); color: #555; cursor: pointer; transition: 0.3s;
+            background: linear-gradient(145deg, rgba(255,255,255,0.8), rgba(245,240,255,0.6));
+            padding: 18px 12px; 
+            border-radius: 18px;
+            box-shadow: 
+                0 4px 15px rgba(139, 92, 246, 0.1),
+                0 1px 3px rgba(139, 92, 246, 0.05);
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center;
+            gap: 8px; 
+            font-size: 0.85rem; 
+            font-weight: 700;
+            border: 1px solid rgba(167, 139, 250, 0.2); 
+            color: #6b21a8; 
+            cursor: pointer; 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
         }
 
-        .item-btn:active { box-shadow: inset 4px 4px 8px #b8bec9, inset -4px -4px 8px #ffffff; }
+        .item-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(167, 139, 250, 0.1), transparent);
+            transition: left 0.5s;
+        }
 
-        .label-text { font-size: 0.55rem; color: #888; text-transform: uppercase; font-weight: 800; }
-        .val-text { color: #6c5ce7; font-size: 0.7rem; text-align: center; }
+        .item-btn:hover::before {
+            left: 100%;
+        }
 
-        .login-btn { background: #6c5ce7; color: #fff !important; border: none; box-shadow: 4px 4px 10px rgba(108, 92, 231, 0.3); }
+        .item-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 8px 25px rgba(139, 92, 246, 0.2),
+                0 2px 8px rgba(139, 92, 246, 0.1);
+            border-color: rgba(167, 139, 250, 0.4);
+        }
+
+        .item-btn:active { 
+            transform: translateY(-1px);
+            box-shadow: 
+                0 2px 8px rgba(139, 92, 246, 0.15),
+                inset 0 2px 4px rgba(139, 92, 246, 0.05);
+        }
+
+        .label-text { 
+            font-size: 0.6rem; 
+            color: #a78bfa; 
+            text-transform: uppercase; 
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .val-text { 
+            color: #7c3aed; 
+            font-size: 0.75rem; 
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .login-btn { 
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed) !important;
+            color: #fff !important; 
+            border: none !important; 
+            box-shadow: 
+                0 6px 20px rgba(124, 58, 237, 0.35),
+                0 2px 8px rgba(124, 58, 237, 0.2) !important;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-btn::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent 30%,
+                rgba(255,255,255,0.15) 50%,
+                transparent 70%
+            );
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
+        }
+
+        .login-btn:hover {
+            transform: translateY(-3px) !important;
+            box-shadow: 
+                0 10px 30px rgba(124, 58, 237, 0.45),
+                0 4px 12px rgba(124, 58, 237, 0.3) !important;
+        }
+
         .start-btn { 
-            background: linear-gradient(135deg, #a29bfe, #6c5ce7); 
-            color: #fff; flex-direction: row; justify-content: center; 
-            grid-column: span 2; border: none; height: 52px; font-size: 0.9rem; border-radius: 15px; margin-top: 5px; 
+            background: linear-gradient(135deg, #c084fc, #a855f7, #8b5cf6) !important;
+            color: #fff; 
+            flex-direction: row; 
+            justify-content: center; 
+            grid-column: span 2; 
+            border: none; 
+            height: 56px; 
+            font-size: 0.95rem; 
+            border-radius: 18px; 
+            margin-top: 5px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            box-shadow: 
+                0 8px 25px rgba(168, 85, 247, 0.4),
+                0 2px 8px rgba(168, 85, 247, 0.2) !important;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .start-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.6s;
+        }
+
+        .start-btn:hover::before {
+            left: 100%;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 
+                0 12px 35px rgba(168, 85, 247, 0.5),
+                0 4px 12px rgba(168, 85, 247, 0.3) !important;
+        }
+
+        .start-btn i {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
         }
 
         .glass-timer {
-            grid-column: span 2; position: relative; 
-            background: #e0e5ec; border-radius: 20px; padding: 30px 20px; 
-            text-align: center; overflow: hidden;
-            box-shadow: inset 6px 6px 12px #b8bec9, inset -6px -6px 12px #ffffff;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            min-height: 130px;
+            grid-column: span 2; 
+            position: relative; 
+            background: linear-gradient(145deg, rgba(255,255,255,0.5), rgba(245,240,255,0.4));
+            border-radius: 24px; 
+            padding: 35px 25px; 
+            text-align: center; 
+            overflow: hidden;
+            box-shadow: 
+                inset 0 2px 8px rgba(139, 92, 246, 0.08),
+                0 4px 20px rgba(139, 92, 246, 0.1);
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center;
+            min-height: 150px;
+            border: 1px solid rgba(167, 139, 250, 0.25);
         }
 
         .timer-val { 
-            font-size: 3.2rem; font-weight: 900; color: #6c5ce7; 
-            position: relative; z-index: 1; letter-spacing: 1px;
+            font-size: 3.5rem; 
+            font-weight: 900; 
+            color: #7c3aed; 
+            position: relative; 
+            z-index: 1; 
+            letter-spacing: 2px;
+            text-shadow: 0 2px 10px rgba(124, 58, 237, 0.2);
+            font-variant-numeric: tabular-nums;
         }
 
         .glass-timer::after {
-            content: ""; position: absolute; 
-            bottom: 0; left: 0; width: 100%; height: 50%;
-            background: rgba(255, 255, 255, 0.25); 
-            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-            border-top: 1.5px solid rgba(255, 255, 255, 0.5);
-            z-index: 10; pointer-events: none;
-            border-radius: 0 0 20px 20px;
+            content: ""; 
+            position: absolute; 
+            bottom: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 45%;
+            background: linear-gradient(to top, rgba(167, 139, 250, 0.1), transparent);
+            backdrop-filter: blur(8px); 
+            -webkit-backdrop-filter: blur(8px);
+            border-top: 1px solid rgba(167, 139, 250, 0.2);
+            z-index: 10; 
+            pointer-events: none;
+            border-radius: 0 0 24px 24px;
         }
 
         .timer-label-top { 
-            position: relative; z-index: 11; font-size: 0.6rem; 
-            color: #6c5ce7; font-weight: 900; margin-bottom: 5px; 
+            position: relative; 
+            z-index: 11; 
+            font-size: 0.65rem; 
+            color: #a78bfa; 
+            font-weight: 800; 
+            margin-bottom: 8px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
         }
 
-        .input-key { border: none; background: transparent; width: 100%; outline: none; font-weight: 900; color: #6c5ce7; font-size: 0.75rem; text-align: center; }
-        .dev-img { width: 100%; max-width: 220px; filter: drop-shadow(8px 8px 12px #b8bec9); }
+        .timer-label-top::before,
+        .timer-label-top::after {
+            content: '◆';
+            margin: 0 10px;
+            font-size: 0.4rem;
+            color: #c4b5fd;
+            vertical-align: middle;
+        }
+
+        .input-key { 
+            border: none; 
+            background: transparent; 
+            width: 100%; 
+            outline: none; 
+            font-weight: 800; 
+            color: #7c3aed; 
+            font-size: 0.8rem; 
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        .input-key::placeholder {
+            color: #c4b5fd;
+            font-weight: 500;
+        }
+
+        .dev-img { 
+            width: 100%; 
+            max-width: 220px; 
+            filter: drop-shadow(0 10px 20px rgba(139, 92, 246, 0.2));
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Status badge */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, #ddd6fe, #c4b5fd);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: #6b21a8;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 8px rgba(139, 92, 246, 0.15);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #22c55e;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #22c55e;
+            animation: blink 2s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        /* Support button special styling */
+        .support-btn {
+            background: linear-gradient(145deg, #fef3c7, #fde68a) !important;
+            border-color: rgba(245, 158, 11, 0.3) !important;
+        }
+
+        .support-btn:hover {
+            background: linear-gradient(145deg, #fde68a, #fcd34d) !important;
+            border-color: rgba(245, 158, 11, 0.5) !important;
+        }
+
+        /* Loading spinner container */
+        .loading-container {
+            grid-column: span 2;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .loading-container i {
+            color: #8b5cf6;
+            font-size: 2.5rem;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Lottie wrapper */
+        .lottie-wrapper {
+            position: relative;
+            filter: drop-shadow(0 8px 20px rgba(139, 92, 246, 0.2));
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .main-container {
+                padding: 0 10px;
+            }
+            .grid-box {
+                padding: 20px 15px;
+            }
+            .timer-val {
+                font-size: 2.8rem;
+            }
+        }
     </style>
+<base target="_blank">
 </head>
 <body>
 
 <div class="main-container">
-    <dotlottie-wc src="https://lottie.host/f16e0f02-28cf-4a6e-97c3-f2d9db69b089/8Hyd2JGMzt.lottie" style="width: 180px; height: 180px" autoplay loop></dotlottie-wc>
+    <div class="lottie-wrapper">
+        <dotlottie-wc src="https://lottie.host/f16e0f02-28cf-4a6e-97c3-f2d9db69b089/8Hyd2JGMzt.lottie" style="width: 180px; height: 180px" autoplay loop></dotlottie-wc>
+    </div>
 
     <div class="grid-box" id="ui-box">
-        <div style="grid-column: span 2; text-align: center; padding: 20px;">
-            <i class="fas fa-spinner fa-spin" style="color: #6c5ce7; font-size: 2rem;"></i>
+        <div class="loading-container">
+            <i class="fas fa-spinner fa-spin"></i>
         </div>
     </div>
 
@@ -114,7 +456,7 @@
     async function init() {
         const devID = getDeviceID();
         const savedKey = localStorage.getItem('stanzin_saved_key') || "";
-        
+
         if (savedKey) {
             database.ref('keys/' + savedKey).once('value', (snap) => {
                 const data = snap.val();
@@ -132,8 +474,8 @@
     function showLoginPage(id, key) {
         document.getElementById('ui-box').innerHTML = `
             <div class="item-btn"><span class="label-text">Device ID</span><span class="val-text">${id}</span></div>
-            <div class="item-btn"><span class="label-text">Enter Key</span><input type="text" id="user-key" class="input-key" value="${key}"></div>
-            <a href="https://t.me/madarabhai98" target="_blank" class="item-btn" style="text-decoration:none;"><i class="fas fa-headset" style="color:#e74c3c"></i><span class="val-text">SUPPORT</span></a>
+            <div class="item-btn"><span class="label-text">Enter Key</span><input type="text" id="user-key" class="input-key" value="${key}" placeholder="ENTER KEY"></div>
+            <a href="https://t.me/madarabhai98" target="_blank" class="item-btn support-btn" style="text-decoration:none;"><i class="fas fa-headset" style="color:#d97706; font-size: 1.2rem;"></i><span class="val-text" style="color:#92400e;">SUPPORT</span></a>
             <div class="item-btn login-btn" onclick="handleLogin()" id="lgnBtn"><i class="fas fa-sign-in-alt"></i><span class="val-text" style="color:white;">LOGIN</span></div>
         `;
     }
@@ -144,18 +486,18 @@
         if(!key) return;
         const btn = document.getElementById('lgnBtn');
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-        
+
         try {
             const snap = await database.ref('keys/' + key).once('value');
             const data = snap.val();
             if(data && data.status === "ON" && (data.deviceID === "" || data.deviceID === devID) && Date.now() < data.expiry) {
                 if(data.deviceID === "") await database.ref('keys/' + key).update({deviceID: devID});
                 localStorage.setItem('stanzin_saved_key', key);
-                
+
                 // --- SUCCESS ACTION ---
                 alert("Login Successful! Redirecting...");
                 window.location.href = REDIRECT_URL; 
-                
+
             } else { 
                 alert("Invalid Key or Expired!"); 
                 btn.innerHTML = '<i class="fas fa-sign-in-alt"></i><span class="val-text" style="color:white;">LOGIN</span>'; 
@@ -169,7 +511,8 @@
     function showStatusPage(key, id, expiry) {
         document.getElementById('ui-box').innerHTML = `
             <div class="glass-timer">
-                <span class="timer-label-top">TIME REMAINING</span>
+                <div class="status-badge"><span class="status-dot"></span>ACTIVE</div>
+                <span class="timer-label-top">Time Remaining</span>
                 <div class="timer-val" id="timer">00:00:00</div>
             </div>
             <div class="item-btn"><span class="label-text">Key</span><span class="val-text">${key}</span></div>
@@ -185,14 +528,14 @@
             const el = document.getElementById('timer');
             if(!el) { clearInterval(timerInterval); return; }
             if(diff <= 0) { el.innerText = "EXPIRED"; clearInterval(timerInterval); return; }
-            
+
             const h = Math.floor(diff/3600000).toString().padStart(2,'0');
             const m = Math.floor((diff%3600000)/60000).toString().padStart(2,'0');
             const s = Math.floor((diff%60000)/1000).toString().padStart(2,'0');
             el.innerText = `${h}:${m}:${s}`;
         }, 1000);
     }
-    
+
     window.onload = init;
 </script>
 </body>
