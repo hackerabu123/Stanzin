@@ -399,6 +399,129 @@
             filter: drop-shadow(0 8px 20px rgba(139, 92, 246, 0.2));
         }
 
+        /* ===== TOAST NOTIFICATION STYLES ===== */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+        }
+
+        .toast {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 14px;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 
+                0 8px 32px rgba(139, 92, 246, 0.2),
+                0 2px 8px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(167, 139, 250, 0.3);
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #6b21a8;
+            min-width: 200px;
+            max-width: 90vw;
+            pointer-events: auto;
+            animation: toastSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s ease;
+        }
+
+        .toast.toast-exit {
+            animation: toastSlideOut 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes toastSlideIn {
+            from { 
+                opacity: 0; 
+                transform: translateX(-50%) translateY(-20px) scale(0.9); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateX(-50%) translateY(0) scale(1); 
+            }
+        }
+
+        @keyframes toastSlideOut {
+            from { 
+                opacity: 1; 
+                transform: translateX(-50%) translateY(0) scale(1); 
+            }
+            to { 
+                opacity: 0; 
+                transform: translateX(-50%) translateY(-20px) scale(0.9); 
+            }
+        }
+
+        .toast-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            flex-shrink: 0;
+        }
+
+        .toast-icon.error {
+            background: linear-gradient(135deg, #fecaca, #fca5a5);
+            color: #dc2626;
+        }
+
+        .toast-icon.success {
+            background: linear-gradient(135deg, #bbf7d0, #86efac);
+            color: #16a34a;
+        }
+
+        .toast-icon.warning {
+            background: linear-gradient(135deg, #fde68a, #fcd34d);
+            color: #d97706;
+        }
+
+        .toast-text {
+            flex: 1;
+        }
+
+        .toast-close {
+            background: none;
+            border: none;
+            color: #a78bfa;
+            cursor: pointer;
+            font-size: 0.9rem;
+            padding: 2px;
+            opacity: 0.6;
+            transition: opacity 0.2s;
+        }
+
+        .toast-close:hover {
+            opacity: 1;
+        }
+
+        /* Toast progress bar */
+        .toast-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #a78bfa, #7c3aed);
+            border-radius: 0 0 0 14px;
+            animation: toastProgress 3s linear forwards;
+        }
+
+        @keyframes toastProgress {
+            from { width: 100%; }
+            to { width: 0%; }
+        }
+
         /* Responsive */
         @media (max-width: 480px) {
             .main-container {
@@ -410,11 +533,18 @@
             .timer-val {
                 font-size: 2.8rem;
             }
+            .toast {
+                padding: 10px 16px;
+                font-size: 0.8rem;
+            }
         }
     </style>
 <base target="_blank">
 </head>
 <body>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
 
 <div class="main-container">
     <div class="lottie-wrapper">
@@ -453,6 +583,36 @@
         return id;
     }
 
+    // ===== TOAST NOTIFICATION FUNCTION =====
+    function showToast(message, type = 'error', duration = 3000) {
+        const container = document.getElementById('toastContainer');
+
+        const iconMap = {
+            error: 'fa-times',
+            success: 'fa-check',
+            warning: 'fa-exclamation'
+        };
+
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.innerHTML = `
+            <div class="toast-icon ${type}"><i class="fas ${iconMap[type] || 'fa-info'}"></i></div>
+            <span class="toast-text">${message}</span>
+            <button class="toast-close" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>
+            <div class="toast-progress"></div>
+        `;
+
+        container.appendChild(toast);
+
+        // Auto remove after duration
+        setTimeout(() => {
+            toast.classList.add('toast-exit');
+            setTimeout(() => {
+                if (toast.parentElement) toast.remove();
+            }, 300);
+        }, duration);
+    }
+
     async function init() {
         const devID = getDeviceID();
         const savedKey = localStorage.getItem('stanzin_saved_key') || "";
@@ -483,7 +643,10 @@
     async function handleLogin() {
         const key = document.getElementById('user-key').value.trim();
         const devID = getDeviceID();
-        if(!key) return;
+        if(!key) {
+            showToast("Please enter a key!", "warning");
+            return;
+        }
         const btn = document.getElementById('lgnBtn');
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
 
@@ -495,16 +658,18 @@
                 localStorage.setItem('stanzin_saved_key', key);
 
                 // --- SUCCESS ACTION ---
-                alert("Login Successful! Redirecting...");
-                window.location.href = REDIRECT_URL; 
+                showToast("Login Successful! Redirecting...", "success", 2000);
+                setTimeout(() => {
+                    window.location.href = REDIRECT_URL;
+                }, 1500);
 
             } else { 
-                alert("Invalid Key or Expired!"); 
+                showToast("Invalid Key or Expired!", "error");
                 btn.innerHTML = '<i class="fas fa-sign-in-alt"></i><span class="val-text" style="color:white;">LOGIN</span>'; 
             }
         } catch(e) { 
-            alert("Error!"); 
-            btn.innerHTML = 'LOGIN'; 
+            showToast("Connection Error!", "error");
+            btn.innerHTML = '<i class="fas fa-sign-in-alt"></i><span class="val-text" style="color:white;">LOGIN</span>'; 
         }
     }
 
@@ -527,7 +692,12 @@
             const diff = expiry - Date.now();
             const el = document.getElementById('timer');
             if(!el) { clearInterval(timerInterval); return; }
-            if(diff <= 0) { el.innerText = "EXPIRED"; clearInterval(timerInterval); return; }
+            if(diff <= 0) { 
+                el.innerText = "EXPIRED"; 
+                showToast("Key Expired!", "error");
+                clearInterval(timerInterval); 
+                return; 
+            }
 
             const h = Math.floor(diff/3600000).toString().padStart(2,'0');
             const m = Math.floor((diff%3600000)/60000).toString().padStart(2,'0');
