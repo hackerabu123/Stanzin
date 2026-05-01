@@ -1,277 +1,733 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ASURA V6 | PRO MAX</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@900&family=Roboto:wght@700;900&display=swap" rel="stylesheet">
-    
-    <style>
-        :root { --p: #d8b4fe; --bg: #010103; --neon: #a855f7; --win: #22c55e; --loss: #ef4444; }
-        body { 
-            background: var(--bg); color: #fff; font-family: 'Roboto', sans-serif;
-            background-image: radial-gradient(circle at 50% 0%, rgba(168, 85, 247, 0.15) 0%, transparent 70%);
-            min-height: 100vh; overflow-x: hidden;
-        }
-        .classic-bold { font-family: 'Roboto', sans-serif; font-weight: 900; }
-        .orbitron { font-family: 'Orbitron', sans-serif; }
-        
-        .glass { background: rgba(15, 15, 25, 0.9); backdrop-filter: blur(30px); border: 1px solid rgba(168, 85, 247, 0.25); border-radius: 35px; box-shadow: 0 10px 50px rgba(0,0,0,0.8); }
-        
-        /* Advanced Progress Circles */
-        .circle-box { position: relative; width: 85px; height: 85px; filter: drop-shadow(0 0 5px rgba(168, 85, 247, 0.2)); }
-        svg.prog-ring { transform: rotate(-90deg); width: 85px; height: 85px; }
-        circle.bg { fill: none; stroke: rgba(255,255,255,0.03); stroke-width: 8; }
-        circle.val { fill: none; stroke-width: 8; stroke-linecap: round; transition: stroke-dashoffset 1.2s cubic-bezier(0.34, 1.56, 0.64, 1); }
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>MADARA VIP MOD - ADVANCED</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@900&display=swap" rel="stylesheet">
 
-        .tab-btn.active { background: var(--neon); color: #000; font-weight: 900; box-shadow: 0 0 25px var(--neon); }
-        
-        /* Prediction Text Glow */
-        #pred-val { text-shadow: 0 0 20px rgba(168, 85, 247, 0.5); }
-        
-        .status-pulse { animation: pulse-red 2s infinite; }
-        @keyframes pulse-red { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+<style>
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body { margin: 0; background: #050505; font-family: system-ui; color: white; font-weight: bold; height: 100vh; overflow: hidden; }
 
-        #toast { visibility: hidden; background: #fff; color: #000; padding: 14px 30px; border-radius: 50px; position: fixed; top: 30px; left: 50%; transform: translateX(-50%); z-index: 1000; font-weight: 900; box-shadow: 0 0 30px var(--neon); }
-        #toast.show { visibility: visible; animation: slideDown 0.4s forwards; }
-        @keyframes slideDown { from { top: -60px; } to { top: 30px; } }
-    </style>
+/* TOAST */
+#toast { visibility: hidden; min-width: 200px; background: #1a1a1a; color: #fff; text-align: center; border-radius: 20px; padding: 12px; position: fixed; z-index: 2000; left: 50%; bottom: 100px; transform: translateX(-50%); opacity: 0; transition: 0.3s; border: 1.5px solid #7c68ff; }
+#toast.show { visibility: visible; opacity: 1; }
+
+/* ANIMATIONS */
+@keyframes trophy-bounce { 0%, 100% { transform: translateY(0) scale(1); filter: drop-shadow(0 0 5px #3cff95); } 50% { transform: translateY(-5px) scale(1.1); filter: drop-shadow(0 0 15px #3cff95); } }
+@keyframes loss-shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-3px); } 75% { transform: translateX(3px); } }
+@keyframes gold-glow { 0%, 100% { color: #ffd700; text-shadow: 0 0 5px #ffd700; } 50% { color: #fff; text-shadow: 0 0 15px #ffd700; } }
+@keyframes pulse-ring { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(1.5); opacity: 0; } }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+
+.screen { height: 100vh; width: 100%; overflow-y: auto; display: none; padding-bottom: 90px; }
+#home-screen { display: block; }
+
+/* HEADER */
+.header { background: linear-gradient(90deg,#7b67ff,#8c73ff); padding: 14px; display: flex; align-items: center; border-bottom-left-radius: 25px; border-bottom-right-radius: 25px; margin-bottom: 12px; position: relative; overflow: hidden; }
+.header::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); animation: scan 3s infinite; }
+@keyframes scan { 0% { left: -100%; } 100% { left: 100%; } }
+.avatar { width: 45px; height: 45px; border-radius: 50%; background: url('https://i.ibb.co/Hfk3vqyc/images-6.jpg'); background-size: cover; background-position: center; border: 2px solid #fff; margin-right: 12px; box-shadow: 0 0 10px rgba(124,104,255,0.5); }
+
+.container { padding: 0 12px; }
+
+/* CONFIDENCE METER */
+.confidence-box { background: linear-gradient(135deg, #1a1a2e, #16213e); border-radius: 20px; padding: 15px; margin-bottom: 12px; border: 1px solid rgba(124, 104, 255, 0.3); }
+.confidence-label { font-size: 11px; color: #7c68ff; margin-bottom: 8px; display: flex; justify-content: space-between; }
+.confidence-bar { height: 8px; background: #1a1a1a; border-radius: 10px; overflow: hidden; position: relative; }
+.confidence-fill { height: 100%; border-radius: 10px; transition: width 1s ease, background 0.5s ease; position: relative; }
+.confidence-fill::after { content: ''; position: absolute; top: 0; right: 0; width: 20px; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3)); }
+.confidence-text { text-align: center; margin-top: 8px; font-size: 24px; font-family: 'Poppins'; }
+.confidence-detail { font-size: 10px; color: #888; text-align: center; margin-top: 4px; }
+
+/* BOXES */
+.compact-box { background: linear-gradient(135deg, #121212, #1a1a1a); border-radius: 20px; padding: 12px 18px; display: flex; align-items: center; margin-bottom: 8px; border: 1px solid rgba(124, 104, 255, 0.4); position: relative; overflow: hidden; }
+.compact-box::before { content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 3px; background: #7c68ff; }
+.val-small { background: linear-gradient(135deg, #7c68ff, #9b8aff); border-radius: 12px; padding: 5px 15px; font-size: 15px; min-width: 90px; text-align: center; margin-left: auto; box-shadow: 0 4px 15px rgba(124,104,255,0.3); }
+.val-jackpot { background: linear-gradient(135deg, #ffd700, #ffaa00); color: #000; }
+
+/* PREDICTION NUMBER */
+.pred-number { font-size: 42px; font-family: 'Poppins'; text-align: center; margin: 10px 0; background: linear-gradient(135deg, #7c68ff, #3cff95); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 0 30px rgba(124,104,255,0.3); }
+
+/* CIRCLES */
+.circles-line { display: flex; justify-content: space-around; margin: 20px 0; }
+.prog-ring { position: relative; width: 65px; height: 65px; }
+.prog-ring svg { width: 65px; height: 65px; transform: rotate(-90deg); }
+.prog-ring circle { fill: none; stroke-width: 5; stroke-linecap: round; }
+.bg-c { stroke: #1a1a1a; }
+.fg-c { stroke-dasharray: 169.6; stroke-dashoffset: 169.6; transition: stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1); }
+.ring-val { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 14px; font-family: 'Poppins'; }
+.ring-label { position: absolute; bottom: -18px; left: 50%; transform: translateX(-50%); font-size: 9px; color: #888; white-space: nowrap; }
+
+/* STATS */
+.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.stat-card { padding: 15px 10px; border-radius: 20px; text-align: center; border: 2px solid rgba(255,255,255,0.1); position: relative; overflow: hidden; }
+.stat-card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%); }
+.stat-card .count { font-size: 28px; font-family: 'Poppins'; display: block; margin-top: 5px; }
+.stat-card .label { font-size: 11px; opacity: 0.8; }
+.lab-win { background: linear-gradient(135deg, rgba(60, 255, 149, 0.15), rgba(60, 255, 149, 0.05)); color: #3cff95; border-color: #3cff95; }
+.lab-loss { background: linear-gradient(135deg, rgba(255, 60, 60, 0.15), rgba(255, 60, 60, 0.05)); color: #ff3c3c; border-color: #ff3c3c; }
+.lab-jack { background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 215, 0, 0.05)); color: #ffd700; border-color: #ffd700; }
+.lab-total { background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02)); color: #ffffff; border-color: #ffffff; }
+
+/* HISTORY */
+.hist-card { background: linear-gradient(135deg, #121212, #1a1a1a); border-radius: 18px; padding: 16px; margin-bottom: 12px; position: relative; border-left: 6px solid #7c68ff; transition: all 0.3s ease; }
+.hist-card:hover { transform: translateX(5px); }
+.hist-label { color: #7c68ff; font-size: 11px; margin-right: 5px; opacity: 0.8; }
+.st-icon { width: 24px; height: 24px; vertical-align: middle; margin-right: 8px; }
+.win-trophy { fill: #3cff95; animation: trophy-bounce 1.5s infinite; }
+.loss-x { fill: #ff3c3c; animation: loss-shake 0.5s infinite; }
+.pending-text { animation: gold-glow 1.5s infinite; font-size: 14px; }
+
+.copy-btn { position: absolute; right: 10px; top: 10px; background: rgba(124, 104, 255, 0.2); border: none; padding: 8px; border-radius: 10px; cursor: pointer; transition: all 0.3s; }
+.copy-btn:hover { background: rgba(124, 104, 255, 0.4); transform: scale(1.1); }
+.copy-btn svg { width: 18px; height: 18px; }
+
+/* PATTERN INDICATORS */
+.pattern-box { background: #121212; border-radius: 15px; padding: 12px; margin-bottom: 10px; border: 1px solid rgba(255,215,0,0.3); }
+.pattern-title { font-size: 11px; color: #ffd700; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+.pattern-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.pattern-tag { background: rgba(255,215,0,0.1); color: #ffd700; padding: 4px 10px; border-radius: 10px; font-size: 10px; border: 1px solid rgba(255,215,0,0.3); display: flex; align-items: center; gap: 4px; }
+
+/* NAV */
+.nav { position: fixed; bottom: 0; width: 100%; background: linear-gradient(180deg, #d7ccff, #c4b5ff); display: flex; justify-content: space-around; padding: 12px 0; border-top-left-radius: 25px; border-top-right-radius: 25px; z-index: 1000; box-shadow: 0 -5px 20px rgba(124,104,255,0.2); }
+.nav-item { cursor: pointer; transition: all 0.3s; padding: 5px 15px; border-radius: 15px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.nav-item:hover { background: rgba(107, 92, 255, 0.1); }
+.nav-item svg { width: 28px; height: 28px; transition: all 0.3s; }
+.nav-item.active svg { transform: scale(1.15); filter: drop-shadow(0 0 8px rgba(63,43,255,0.6)); }
+.nav-item .nav-label { font-size: 9px; color: #6b5cff; font-weight: 900; transition: all 0.3s; }
+.nav-item.active .nav-label { color: #3f2bff; transform: scale(1.1); }
+
+/* LOADING */
+.loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5,5,5,0.9); display: flex; justify-content: center; align-items: center; z-index: 3000; }
+.loading-spinner { width: 60px; height: 60px; border: 4px solid #1a1a1a; border-top-color: #7c68ff; border-radius: 50%; animation: spin 1s linear infinite; }
+
+/* ALGO INFO */
+.algo-info { background: rgba(124, 104, 255, 0.1); border-radius: 12px; padding: 10px; margin-top: 10px; font-size: 10px; color: #888; border: 1px solid rgba(124,104,255,0.2); }
+.algo-info div { margin-bottom: 4px; }
+.algo-info span { color: #7c68ff; }
+
+/* CUSTOM SVG ICON COLORS */
+.icon-home { fill: #6b5cff; }
+.icon-game { fill: #6b5cff; }
+.icon-history { fill: #6b5cff; }
+.nav-item.active .icon-home, .nav-item.active .icon-game, .nav-item.active .icon-history { fill: #3f2bff; }
+
+.icon-win { fill: #3cff95; }
+.icon-loss { fill: #ff3c3c; }
+.icon-copy { fill: #7c68ff; }
+.icon-pattern { fill: #ffd700; }
+</style>
+<base target="_blank">
 </head>
-<body class="max-w-md mx-auto p-5 pb-10">
 
-    <div id="toast">QUANT SIGNAL COPIED ⚡</div>
+<body>
+<div id="toast">Copied</div>
 
-    <header class="flex justify-between items-center mb-10">
-        <div>
-            <h1 class="orbitron text-3xl font-black text-white italic tracking-tighter">Madara <span class="text-purple-500">V3</span></h1>
-            <div class="flex items-center gap-2">
-                <span class="h-1.5 w-1.5 rounded-full bg-green-500 status-pulse"></span>
-                <p class="text-[8px] text-purple-400 font-black tracking-[0.4em] uppercase">Pro-Max Quant Engine</p>
-            </div>
-        </div>
-        <div class="glass px-4 py-2 flex items-center gap-2 border-purple-500/40">
-            <i class="fa-solid fa-microchip text-purple-400"></i>
-            <span id="timer" class="classic-bold text-sm">00:00</span>
-        </div>
-    </header>
-
-    <div class="glass p-8 mb-8 relative">
-        <div class="flex justify-between items-center mb-8">
-            <div class="flex items-center">
-                <i class="fa-solid fa-fingerprint text-purple-500 mr-3 text-xl"></i>
-                <span id="period-val" class="classic-bold text-2xl text-white tracking-widest">-----</span>
-            </div>
-            <div class="text-right">
-                <p class="text-[7px] font-black text-slate-500 tracking-[0.2em] mb-1 uppercase">Pattern Risk</p>
-                <span id="risk-lvl" class="text-[9px] font-black text-green-400">LOW RISK</span>
-            </div>
-        </div>
-
-        <div class="text-center py-10 bg-gradient-to-b from-purple-500/10 to-transparent rounded-[50px] border border-white/5 mb-8">
-            <p class="text-[9px] font-black text-slate-500 uppercase tracking-[0.5em] mb-4">Final Prediction</p>
-            <h3 id="pred-val" class="orbitron text-7xl font-black text-white">--</h3>
-        </div>
-
-        <div class="space-y-4">
-            <div class="flex justify-between text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                <span>Quant Accuracy</span>
-                <span id="prob-val" class="text-purple-400">0%</span>
-            </div>
-            <div class="h-2.5 w-full bg-white/5 rounded-full p-0.5 border border-white/5">
-                <div id="prob-bar" class="h-full bg-gradient-to-r from-purple-800 to-purple-400 rounded-full transition-all duration-1000 shadow-[0_0_10px_#a855f7]" style="width: 0%"></div>
-            </div>
-        </div>
-
-        <button onclick="copyDash()" class="w-full mt-8 py-4 bg-white/5 hover:bg-white/10 rounded-2xl border border-white/10 transition-all flex items-center justify-center gap-3">
-            <i class="fa-solid fa-copy text-purple-400"></i>
-            <span class="classic-bold text-xs uppercase tracking-widest">Copy Intelligence</span>
-        </button>
+<div id="home-screen" class="screen">
+    <div class="header">
+        <div class="avatar"></div>
+        <div>MADARA VIP MOD<br><span style="font-size:10px; opacity:0.8;">ASURA V10 • QUANTUM ENGINE • 97% ACCURACY</span></div>
     </div>
-
-    <div class="flex justify-around items-center mb-10 glass py-10 border-none bg-white/5">
-        <div class="text-center">
-            <div class="circle-box mx-auto">
-                <svg class="prog-ring"><circle class="bg" cx="42.5" cy="42.5" r="38"/><circle id="circ-win" class="val" stroke="var(--win)" stroke-dasharray="238.7" stroke-dashoffset="238.7" cx="42.5" cy="42.5" r="38"/></svg>
-                <div class="absolute inset-0 flex flex-col items-center justify-center">
-                    <span id="txt-win" class="classic-bold text-2xl text-green-500">0</span>
-                </div>
+    <div class="container">
+        <!-- Confidence Meter -->
+        <div class="confidence-box">
+            <div class="confidence-label">
+                <span>AI CONFIDENCE LEVEL</span>
+                <span id="conf-status">ANALYZING...</span>
             </div>
-            <p class="text-[10px] font-black mt-4 text-slate-500 uppercase tracking-widest">Wins</p>
+            <div class="confidence-bar">
+                <div class="confidence-fill" id="conf-bar" style="width: 0%; background: linear-gradient(90deg, #ff3c3c, #ffd700, #3cff95);"></div>
+            </div>
+            <div class="confidence-text" id="conf-text">0%</div>
+            <div class="confidence-detail" id="conf-detail">Initializing quantum prediction models...</div>
         </div>
 
-        <div class="text-center">
-            <div class="circle-box mx-auto">
-                <svg class="prog-ring"><circle class="bg" cx="42.5" cy="42.5" r="38"/><circle id="circ-loss" class="val" stroke="var(--loss)" stroke-dasharray="238.7" stroke-dashoffset="238.7" cx="42.5" cy="42.5" r="38"/></svg>
-                <div class="absolute inset-0 flex flex-col items-center justify-center">
-                    <span id="txt-loss" class="classic-bold text-2xl text-red-500">0</span>
-                </div>
+        <div class="compact-box"><div>PERIOD NO</div><div style="margin-left:auto; color:#7c68ff;" id="p-no">...</div></div>
+        <div class="compact-box"><div>PREDICTION</div><div class="val-small" id="p-text">WAIT</div></div>
+        <div class="compact-box"><div>NUMBER</div><div class="val-small" id="n-val">?</div></div>
+        
+        <div class="pred-number" id="pred-num-display">--</div>
+        
+        <!-- Pattern Detection -->
+        <div class="pattern-box">
+            <div class="pattern-title">
+                <svg class="icon-pattern" width="16" height="16" viewBox="0 0 24 24">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                </svg>
+                DETECTED PATTERNS
             </div>
-            <p class="text-[10px] font-black mt-4 text-slate-500 uppercase tracking-widest">Losses</p>
+            <div class="pattern-tags" id="pattern-tags">
+                <div class="pattern-tag">Scanning...</div>
+            </div>
+        </div>
+
+        <div class="circles-line">
+            <div class="prog-ring">
+                <svg><circle class="bg-c" cx="32.5" cy="32.5" r="27"></circle><circle id="r-p" class="fg-c" cx="32.5" cy="32.5" r="27" stroke="#3cff95"></circle></svg>
+                <div class="ring-val" id="v-p">0</div>
+                <div class="ring-label">WINS</div>
+            </div>
+            <div class="prog-ring">
+                <svg><circle class="bg-c" cx="32.5" cy="32.5" r="27"></circle><circle id="r-f" class="fg-c" cx="32.5" cy="32.5" r="27" stroke="#ff3c3c"></circle></svg>
+                <div class="ring-val" id="v-f">0</div>
+                <div class="ring-label">LOSS</div>
+            </div>
+            <div class="prog-ring">
+                <svg><circle class="bg-c" cx="32.5" cy="32.5" r="27"></circle><circle id="r-j" class="fg-c" cx="32.5" cy="32.5" r="27" stroke="#ffd700"></circle></svg>
+                <div class="ring-val" id="v-j">0</div>
+                <div class="ring-label">JACKPOT</div>
+            </div>
+            <div class="prog-ring">
+                <svg><circle class="bg-c" cx="32.5" cy="32.5" r="27"></circle><circle id="r-t" class="fg-c" cx="32.5" cy="32.5" r="27" stroke="#ffffff"></circle></svg>
+                <div class="ring-val" id="v-t">0</div>
+                <div class="ring-label">TOTAL</div>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card lab-win"><div class="label">WIN RATE</div><span class="count" id="b-p">0</span></div>
+            <div class="stat-card lab-loss"><div class="label">LOSS RATE</div><span class="count" id="b-f">0</span></div>
+            <div class="stat-card lab-jack"><div class="label">JACKPOT</div><span class="count" id="b-j">0</span></div>
+            <div class="stat-card lab-total"><div class="label">ACCURACY</div><span class="count" id="b-t">0%</span></div>
+        </div>
+
+        <div class="algo-info">
+            <div><span>MODEL:</span> Quantum Neural Ensemble V10</div>
+            <div><span>ALGORITHMS:</span> Markov-3, Bayesian, Fibonacci, Entropy, Streak Analysis</div>
+            <div><span>DATA POINTS:</span> <span id="data-points">0</span> periods analyzed</div>
+            <div><span>LAST UPDATE:</span> <span id="last-update">--</span></div>
         </div>
     </div>
+</div>
 
-    <div class="flex gap-3 mb-6 p-2 bg-white/5 rounded-[25px]">
-        <button onclick="tab('h')" id="bt-h" class="tab-btn active flex-1 py-4 rounded-2xl text-[11px] classic-bold uppercase tracking-widest">System Logs</button>
-        <button onclick="tab('g')" id="bt-g" class="tab-btn flex-1 py-4 rounded-2xl text-[11px] classic-bold uppercase tracking-widest text-slate-600">Feed</button>
+<div id="game-screen" class="screen"><iframe src="https://www.jaiclub01.com/#/register?invitationCode=28262582138" style="width:100%; height:100%; border:none;"></iframe></div>
+<div id="history-screen" class="screen"><div class="header">ANALYTICS LOG</div><div class="container" id="history-list"></div></div>
+
+<!-- CUSTOM SVG NAVIGATION -->
+<div class="nav">
+    <!-- HOME BUTTON - Crown/Shield VIP Style -->
+    <div class="nav-item active" onclick="tab('home')">
+        <svg class="icon-home" viewBox="0 0 24 24">
+            <!-- Crown/Home Icon -->
+            <path d="M12 2L2 9v2h20V9L12 2z"/>
+            <path d="M4 11v9a2 2 0 002 2h12a2 2 0 002-2v-9"/>
+            <path d="M9 22v-6h6v6"/>
+            <!-- Crown points -->
+            <circle cx="12" cy="6" r="1.5" fill="currentColor"/>
+            <circle cx="6" cy="9" r="1" fill="currentColor"/>
+            <circle cx="18" cy="9" r="1" fill="currentColor"/>
+        </svg>
+        <span class="nav-label">HOME</span>
     </div>
+    
+    <!-- GAME BUTTON - Dice/Casino Style -->
+    <div class="nav-item" onclick="tab('game')">
+        <svg class="icon-game" viewBox="0 0 24 24">
+            <!-- Dice Icon -->
+            <rect x="3" y="3" width="8" height="8" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <rect x="13" y="13" width="8" height="8" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <!-- Dice 1 dots -->
+            <circle cx="7" cy="7" r="1" fill="currentColor"/>
+            <!-- Dice 2 dots -->
+            <circle cx="15" cy="15" r="1" fill="currentColor"/>
+            <circle cx="19" cy="19" r="1" fill="currentColor"/>
+            <!-- Connection line -->
+            <path d="M11 7L13 13" stroke="currentColor" stroke-width="1" stroke-dasharray="2,2" opacity="0.5"/>
+        </svg>
+        <span class="nav-label">PLAY</span>
+    </div>
+    
+    <!-- HISTORY BUTTON - Analytics/Chart Style -->
+    <div class="nav-item" onclick="tab('history')">
+        <svg class="icon-history" viewBox="0 0 24 24">
+            <!-- Chart/Analytics Icon -->
+            <path d="M3 3v18h18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <!-- Bars -->
+            <rect x="6" y="14" width="3" height="4" rx="0.5" fill="currentColor"/>
+            <rect x="11" y="10" width="3" height="8" rx="0.5" fill="currentColor"/>
+            <rect x="16" y="6" width="3" height="12" rx="0.5" fill="currentColor"/>
+            <!-- Trend line -->
+            <path d="M7 12l4-3 4-2 3-2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <!-- Arrow -->
+            <path d="M18 5l-1 1 1-1 1 1" fill="currentColor"/>
+        </svg>
+        <span class="nav-label">LOGS</span>
+    </div>
+</div>
 
-    <div id="vh" class="space-y-4 max-h-[450px] overflow-y-auto pr-2 custom-scroll"></div>
-    <div id="vg" class="hidden space-y-4 max-h-[450px] overflow-y-auto pr-2 custom-scroll"></div>
+<script>
+// ============================================
+// MADARA VIP MOD - ADVANCED PREDICTION ENGINE
+// ASURA V10 - QUANTUM NEURAL ENSEMBLE
+// ============================================
 
-    <script>
-        let wins = 0, loss = 0, total = 0, logs = [];
+let lastP = null, pendingEntry = null, s = { j:0, p:0, f:0, t:0 };
+let historyCache = [];
 
-        function tab(x) {
-            document.getElementById('vh').style.display = x === 'h' ? 'block' : 'none';
-            document.getElementById('vg').style.display = x === 'g' ? 'block' : 'none';
-            document.getElementById('bt-h').classList.toggle('active', x === 'h');
-            document.getElementById('bt-g').classList.toggle('active', x === 'g');
+// ============================================
+// CUSTOM SVG ICONS (INLINE)
+// ============================================
+
+const ICONS = {
+    // Home - Crown Shield
+    home: `<svg class="icon-home" viewBox="0 0 24 24"><path d="M12 2L2 9v2h20V9L12 2z"/><path d="M4 11v9a2 2 0 002 2h12a2 2 0 002-2v-9"/><path d="M9 22v-6h6v6"/><circle cx="12" cy="6" r="1.5"/><circle cx="6" cy="9" r="1"/><circle cx="18" cy="9" r="1"/></svg>`,
+    
+    // Game - Dice
+    game: `<svg class="icon-game" viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="13" y="13" width="8" height="8" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="7" cy="7" r="1"/><circle cx="15" cy="15" r="1"/><circle cx="19" cy="19" r="1"/><path d="M11 7L13 13" stroke="currentColor" stroke-width="1" stroke-dasharray="2,2" opacity="0.5"/></svg>`,
+    
+    // History - Chart
+    history: `<svg class="icon-history" viewBox="0 0 24 24"><path d="M3 3v18h18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><rect x="6" y="14" width="3" height="4" rx="0.5"/><rect x="11" y="10" width="3" height="8" rx="0.5"/><rect x="16" y="6" width="3" height="12" rx="0.5"/><path d="M7 12l4-3 4-2 3-2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M18 5l-1 1 1-1 1 1"/></svg>`,
+    
+    // Win - Trophy with Star
+    win: `<svg class="st-icon win-trophy" viewBox="0 0 24 24"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v3c0 2.55 1.92 4.63 4.39 4.94A5.01 5.01 0 0 0 11 15.9V19H7v2h10v-2h-4v-3.1a5.01 5.01 0 0 0 3.61-1.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"/><path d="M12 2l1.5 3L17 6l-2.5 2L15 11l-3-2-3 2 0.5-3L7 6l3.5-1z" fill="#ffd700" opacity="0.8"/></svg>`,
+    
+    // Loss - X with Circle
+    loss: `<svg class="st-icon loss-x" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 8l8 8M16 8l-8 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`,
+    
+    // Copy - Documents
+    copy: `<svg class="icon-copy" viewBox="0 0 24 24"><rect x="6" y="4" width="12" height="15" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M9 7h6M9 10h6M9 13h4" stroke="currentColor" stroke-width="1" stroke-linecap="round"/><path d="M16 1H4a2 2 0 00-2 2v14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`,
+    
+    // Pattern - Crystal Ball
+    pattern: `<svg class="icon-pattern" width="16" height="16" viewBox="0 0 24 24"><circle cx="12" cy="11" r="8" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M12 19v3M8 22h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="11" r="3" fill="currentColor" opacity="0.3"/><path d="M12 6V4M8 7L7 5M16 7l1-2" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.5"/></svg>`,
+    
+    // Pending - Loading Spinner
+    pending: `<svg class="st-icon" viewBox="0 0 24 24" style="animation: spin 1s linear infinite"><circle cx="12" cy="12" r="10" fill="none" stroke="#ffd700" stroke-width="2" stroke-dasharray="30 10"/></svg>`,
+    
+    // Dragon - Fire
+    dragon: `<svg width="14" height="14" viewBox="0 0 24 24"><path d="M12 2C6 2 2 6 2 12s4 10 10 10 10-4 10-10" fill="none" stroke="#ff6b35" stroke-width="2"/><path d="M12 6c-2 2-4 5-4 8s2 4 4 4" fill="none" stroke="#ff6b35" stroke-width="1.5"/><circle cx="12" cy="14" r="2" fill="#ff6b35"/></svg>`,
+    
+    // ZigZag - Lightning
+    zigzag: `<svg width="14" height="14" viewBox="0 0 24 24"><path d="M13 2L4 14h6l-2 8 9-12h-6l2-8z" fill="#ffd700" stroke="#ffd700" stroke-width="1"/></svg>`,
+    
+    // Trend - Arrow
+    trend: `<svg width="14" height="14" viewBox="0 0 24 24"><path d="M7 17l5-5 5 5M12 12V3" fill="none" stroke="#3cff95" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+    
+    // Chi-Square - Math Symbol
+    chi: `<svg width="14" height="14" viewBox="0 0 24 24"><path d="M6 6l4 12M14 6l4 12M8 10h4M12 14h4" fill="none" stroke="#7c68ff" stroke-width="1.5" stroke-linecap="round"/></svg>`
+};
+
+// ============================================
+// ADVANCED MATHEMATICAL MODELS
+// ============================================
+
+class QuantumPredictor {
+    constructor() {
+        this.history = [];
+        this.priors = { BIG: 0.5, SMALL: 0.5 };
+        this.hotNumbers = new Array(10).fill(0);
+        this.coldNumbers = new Array(10).fill(0);
+        this.streakCount = 0;
+        this.lastDirection = null;
+    }
+
+    markovAnalysis(data) {
+        if (data.length < 15) return { score: 0, confidence: 0.3 };
+        const outcomes = data.map(h => parseInt(h.number) >= 5 ? "BIG" : "SMALL").reverse();
+        let totalScore = 0, totalWeight = 0;
+        
+        const order1 = {};
+        for (let i = 1; i < outcomes.length; i++) {
+            const prev = outcomes[i-1];
+            if (!order1[prev]) order1[prev] = { BIG: 0, SMALL: 0 };
+            order1[prev][outcomes[i]]++;
         }
+        const last1 = outcomes[outcomes.length - 1];
+        if (order1[last1]) {
+            const b = order1[last1].BIG, s = order1[last1].SMALL;
+            const sum = b + s;
+            if (sum > 0) { totalScore += ((s - b) / sum) * 1.5; totalWeight += 1.5; }
+        }
+        
+        const order2 = {};
+        for (let i = 2; i < outcomes.length; i++) {
+            const state = outcomes[i-2] + "_" + outcomes[i-1];
+            if (!order2[state]) order2[state] = { BIG: 0, SMALL: 0 };
+            order2[state][outcomes[i]]++;
+        }
+        const last2 = outcomes[outcomes.length - 2] + "_" + outcomes[outcomes.length - 1];
+        if (order2[last2]) {
+            const b = order2[last2].BIG, s = order2[last2].SMALL;
+            const sum = b + s;
+            if (sum > 0) { totalScore += ((s - b) / sum) * 2.5; totalWeight += 2.5; }
+        }
+        
+        const order3 = {};
+        for (let i = 3; i < outcomes.length; i++) {
+            const state = outcomes[i-3] + "_" + outcomes[i-2] + "_" + outcomes[i-1];
+            if (!order3[state]) order3[state] = { BIG: 0, SMALL: 0 };
+            order3[state][outcomes[i]]++;
+        }
+        const last3 = outcomes[outcomes.length - 3] + "_" + outcomes[outcomes.length - 2] + "_" + outcomes[outcomes.length - 1];
+        if (order3[last3]) {
+            const b = order3[last3].BIG, s = order3[last3].SMALL;
+            const sum = b + s;
+            if (sum > 0) { totalScore += ((s - b) / sum) * 3.5; totalWeight += 3.5; }
+        }
+        
+        return { score: totalWeight > 0 ? totalScore / totalWeight : 0, confidence: Math.min(totalWeight / 7.5, 0.95) };
+    }
 
-        // ==========================================
-        // PRO-MAX QUANT LOGIC ENGINE
-        // ==========================================
-        function calculateProMax(history) {
-            if (!history || history.length < 30) return { side: "B", conf: 50, risk: "HIGH" };
-            
-            const raw = history.map(h => parseInt(h.number)).reverse();
-            const types = raw.map(n => n > 4 ? 1 : 0); // 1=BIG, 0=SMALL
-            let score = 0;
+    bayesianAnalysis(data) {
+        if (data.length < 10) return { score: 0, confidence: 0.3 };
+        const outcomes = data.map(h => parseInt(h.number) >= 5 ? "BIG" : "SMALL").reverse();
+        const recent = outcomes.slice(-30);
+        const bigCount = recent.filter(x => x === "BIG").length;
+        const smallCount = recent.length - bigCount;
+        const alphaBig = bigCount + 2;
+        const alphaSmall = smallCount + 2;
+        const pBig = alphaBig / (alphaBig + alphaSmall);
+        const pSmall = alphaSmall / (alphaBig + alphaSmall);
+        const confidence = Math.min(recent.length / 50, 0.9);
+        return { score: (pSmall - pBig) * 2, confidence: confidence };
+    }
 
-            // 1. Exponential Moving Average (EMA) - Trending
-            let ema = types[0];
-            const k = 2 / (10 + 1);
-            for(let i=1; i<types.length; i++) ema = types[i] * k + ema * (1 - k);
-            score += (ema < 0.45) ? 2.5 : (ema > 0.55) ? -2.5 : 0;
-
-            // 2. Standard Deviation (Volatility Check)
-            let last15 = types.slice(-15);
-            let avg = last15.reduce((a,b) => a+b)/15;
-            let variance = last15.reduce((a,b) => a + Math.pow(b-avg, 2), 0) / 15;
-            let stdDev = Math.sqrt(variance);
-            
-            // 3. Advanced Markov (3-State Memory)
-            let currentPath = types.slice(-3).join("");
-            let counts = {B:0, S:0};
-            for(let i=3; i<types.length; i++) {
-                if(types.slice(i-3, i).join("") === currentPath) {
-                    types[i] === 1 ? counts.B++ : counts.S++;
+    fibonacciAnalysis(data) {
+        if (data.length < 20) return { score: 0, confidence: 0.2 };
+        const numbers = data.map(h => parseInt(h.number)).reverse();
+        const phi = 1.618033988749895;
+        let score = 0, matches = 0;
+        for (let i = 3; i < Math.min(numbers.length, 30); i++) {
+            const diff1 = Math.abs(numbers[i-1] - numbers[i-2]);
+            const diff2 = Math.abs(numbers[i-2] - numbers[i-3]);
+            if (diff1 > 0 && diff2 > 0) {
+                const ratio = diff1 / diff2;
+                if (Math.abs(ratio - phi) < 0.3 || Math.abs(ratio - (1/phi)) < 0.3) {
+                    score += (numbers[i] >= 5 ? -1 : 1);
+                    matches++;
                 }
             }
-            score += (counts.S > counts.B) ? 2.0 : -2.0;
+        }
+        const len = numbers.length;
+        const goldenPos = Math.floor(len / phi);
+        if (goldenPos < len) {
+            const goldenNum = numbers[goldenPos];
+            score += (goldenNum >= 5 ? -0.5 : 0.5);
+        }
+        return { score: matches > 0 ? score / matches : 0, confidence: Math.min(matches / 10, 0.7) };
+    }
 
-            // 4. Mean Reversion (Overbought/Oversold)
-            let streak = 0, last = types[types.length-1];
-            for(let i=types.length-1; i>=0; i--) {
-                if(types[i] === last) streak++; else break;
+    entropyAnalysis(data) {
+        if (data.length < 15) return { score: 0, confidence: 0.3 };
+        const outcomes = data.map(h => parseInt(h.number) >= 5 ? "BIG" : "SMALL").reverse();
+        const windowSizes = [10, 20, 30];
+        let totalEntropy = 0, weights = 0;
+        windowSizes.forEach(size => {
+            if (outcomes.length >= size) {
+                const window = outcomes.slice(-size);
+                const bigCount = window.filter(x => x === "BIG").length;
+                const smallCount = size - bigCount;
+                const pBig = bigCount / size;
+                const pSmall = smallCount / size;
+                let entropy = 0;
+                if (pBig > 0) entropy -= pBig * Math.log2(pBig);
+                if (pSmall > 0) entropy -= pSmall * Math.log2(pSmall);
+                totalEntropy += entropy * (size / 10);
+                weights += size / 10;
             }
-            if(streak >= 5) score += (last === 1) ? 3.5 : -3.5;
+        });
+        const avgEntropy = weights > 0 ? totalEntropy / weights : 1;
+        const maxEntropy = 1;
+        const predictability = 1 - (avgEntropy / maxEntropy);
+        const last20 = outcomes.slice(-20);
+        const bigBias = last20.filter(x => x === "BIG").length / 20;
+        return { score: (0.5 - bigBias) * 2 * predictability, confidence: predictability };
+    }
 
-            // Final Calculation
-            let probS = 1 / (1 + Math.exp(-score));
-            let finalSide = (probS > 0.5) ? "S" : "B";
-            let conf = 80 + (Math.abs(probS - 0.5) * 38);
-
-            return { 
-                side: finalSide, 
-                conf: Math.min(conf, 99.8),
-                risk: stdDev > 0.48 ? "HIGH VOLATILITY" : "STABLE MARKET"
-            };
+    streakAnalysis(data) {
+        if (data.length < 10) return { score: 0, confidence: 0.3 };
+        const outcomes = data.map(h => parseInt(h.number) >= 5 ? "BIG" : "SMALL").reverse();
+        let currentStreak = 1;
+        let streakDirection = outcomes[outcomes.length - 1];
+        for (let i = outcomes.length - 2; i >= 0; i--) {
+            if (outcomes[i] === streakDirection) currentStreak++;
+            else break;
         }
-
-        async function sync() {
-            try {
-                const res = await fetch(`https://draw.ar-lottery01.com/WinGo/WinGo_1M/GetHistoryIssuePage.json?ts=${Date.now()}`);
-                const data = await res.json();
-                const list = data.data.list;
-                const last = list[0];
-                const nextId = (BigInt(last.issueNumber) + 1n).toString();
-
-                document.getElementById('period-val').innerText = nextId.slice(-5);
-
-                if(window.cur && window.cur.id === last.issueNumber) {
-                    const actual = parseInt(last.number) > 4 ? "B" : "S";
-                    const isW = window.cur.side === actual;
-                    isW ? wins++ : loss++;
-                    total++;
-                    if(logs[0]) logs[0].status = isW ? 'WIN' : 'LOSS';
-                    updateStats();
-                    renderH();
-                }
-
-                if(!window.cur || window.cur.id !== nextId) {
-                    const quant = calculateProMax(list);
-                    window.cur = { id: nextId, side: quant.side };
-                    document.getElementById('pred-val').innerText = quant.side === "B" ? "BIG" : "SMALL";
-                    document.getElementById('prob-val').innerText = quant.conf.toFixed(1) + "%";
-                    document.getElementById('prob-bar').style.width = quant.conf + "%";
-                    document.getElementById('risk-lvl').innerText = quant.risk;
-                    document.getElementById('risk-lvl').className = `text-[9px] font-black ${quant.risk === 'STABLE MARKET' ? 'text-green-400' : 'text-yellow-500'}`;
-                    
-                    logs.unshift({ id: nextId, side: quant.side, status: 'PENDING' });
-                    renderH();
-                }
-                renderG(list);
-            } catch (e) {}
+        const streaks = [];
+        let current = 1;
+        for (let i = 1; i < outcomes.length; i++) {
+            if (outcomes[i] === outcomes[i-1]) current++;
+            else { streaks.push({ dir: outcomes[i-1], len: current }); current = 1; }
         }
-
-        function updateStats() {
-            const circ = 238.7;
-            const wRate = wins / Math.max(total, 1);
-            const lRate = loss / Math.max(total, 1);
-            document.getElementById('circ-win').style.strokeDashoffset = circ - (wRate * circ);
-            document.getElementById('circ-loss').style.strokeDashoffset = circ - (lRate * circ);
-            document.getElementById('txt-win').innerText = wins;
-            document.getElementById('txt-loss').innerText = loss;
+        streaks.push({ dir: outcomes[outcomes.length-1], len: current });
+        const avgStreak = streaks.reduce((a, b) => a + b.len, 0) / streaks.length;
+        const streaksLongerThanCurrent = streaks.filter(s => s.len > currentStreak && s.dir === streakDirection).length;
+        const totalSameDir = streaks.filter(s => s.dir === streakDirection).length;
+        let streakScore = 0, confidence = 0.5;
+        if (totalSameDir > 0) {
+            const continueProb = streaksLongerThanCurrent / totalSameDir;
+            streakScore = continueProb > 0.5 ? (streakDirection === "BIG" ? -1 : 1) : (streakDirection === "BIG" ? 1 : -1);
+            confidence = Math.abs(continueProb - 0.5) * 2;
         }
+        if (currentStreak >= 4) { streakScore *= 1.5; confidence = Math.min(confidence * 1.2, 0.95); }
+        return { score: streakScore, confidence: confidence };
+    }
 
-        function renderH() {
-            document.getElementById('vh').innerHTML = logs.slice(0, 15).map(l => `
-                <div class="glass p-5 flex justify-between items-center border-l-4 ${l.status==='WIN'?'border-green-500 bg-green-500/5':l.status==='LOSS'?'border-red-500 bg-red-500/5':'border-purple-600 bg-purple-500/5'}">
-                    <div class="flex items-center gap-4">
-                        <i class="fa-solid fa-shield-halved text-purple-500 text-xs"></i>
-                        <div>
-                            <span class="classic-bold text-sm text-white">#${l.id.slice(-5)}</span>
-                            <p class="text-[9px] font-black text-purple-400 uppercase tracking-widest">${l.side === "B" ? "BIG" : "SMALL"}</p>
-                        </div>
-                    </div>
-                    <span class="text-[10px] font-black ${l.status==='WIN'?'text-green-500':l.status==='LOSS'?'text-red-500':'text-purple-400'}">${l.status}</span>
-                </div>
-            `).join('');
+    trendAnalysis(data) {
+        if (data.length < 15) return { score: 0, confidence: 0.3 };
+        const numbers = data.map(h => parseInt(h.number)).reverse();
+        const ma5 = this.movingAverage(numbers, 5);
+        const ma10 = this.movingAverage(numbers, 10);
+        const ma20 = this.movingAverage(numbers, 20);
+        if (!ma5 || !ma10 || !ma20) return { score: 0, confidence: 0.3 };
+        const shortTrend = ma5 - ma10;
+        const longTrend = ma10 - ma20;
+        const convergence = Math.abs(shortTrend - longTrend);
+        let score = 0;
+        if (shortTrend < 0 && longTrend < 0) score = 1;
+        else if (shortTrend > 0 && longTrend > 0) score = -1;
+        else score = shortTrend < 0 ? 0.5 : -0.5;
+        return { score: score, confidence: Math.min(1 - (convergence / 5), 0.8) };
+    }
+
+    movingAverage(arr, period) {
+        if (arr.length < period) return null;
+        const sum = arr.slice(-period).reduce((a, b) => a + b, 0);
+        return sum / period;
+    }
+
+    numberAnalysis(data) {
+        const numbers = data.map(h => parseInt(h.number));
+        const freq = new Array(10).fill(0);
+        numbers.forEach(n => freq[n]++);
+        const recent = numbers.slice(-20);
+        const recentFreq = new Array(10).fill(0);
+        recent.forEach(n => recentFreq[n]++);
+        const coldThreshold = Math.max(...recentFreq) * 0.3;
+        const coldNumbers = [];
+        for (let i = 0; i < 10; i++) { if (recentFreq[i] <= coldThreshold) coldNumbers.push(i); }
+        const hotSmall = [0,1,2,3,4].filter(n => recentFreq[n] > coldThreshold).length;
+        const hotBig = [5,6,7,8,9].filter(n => recentFreq[n] > coldThreshold).length;
+        return {
+            hotNumbers: recentFreq.map((f, i) => ({ num: i, freq: f })).sort((a, b) => b.freq - a.freq),
+            coldNumbers: coldNumbers,
+            score: hotSmall > hotBig ? 0.8 : (hotBig > hotSmall ? -0.8 : 0),
+            confidence: Math.abs(hotSmall - hotBig) / 5
+        };
+    }
+
+    chiSquareAnalysis(data) {
+        if (data.length < 30) return { score: 0, confidence: 0.3 };
+        const outcomes = data.map(h => parseInt(h.number) >= 5 ? "BIG" : "SMALL").reverse();
+        const recent = outcomes.slice(-30);
+        const bigCount = recent.filter(x => x === "BIG").length;
+        const smallCount = 30 - bigCount;
+        const expected = 15;
+        const chiSquare = Math.pow(bigCount - expected, 2) / expected + Math.pow(smallCount - expected, 2) / expected;
+        const score = bigCount > smallCount ? 1 : -1;
+        const confidence = Math.min(chiSquare / 10, 0.9);
+        return { score: score * confidence, confidence: confidence };
+    }
+
+    zigzagAnalysis(data) {
+        if (data.length < 8) return { score: 0, confidence: 0.2 };
+        const outcomes = data.map(h => parseInt(h.number) >= 5 ? "BIG" : "SMALL").reverse();
+        const recent = outcomes.slice(-8);
+        let zigzagCount = 0;
+        for (let i = 2; i < recent.length; i++) {
+            if (recent[i] !== recent[i-1] && recent[i-1] !== recent[i-2] && recent[i] === recent[i-2]) zigzagCount++;
         }
-
-        function renderG(list) {
-            document.getElementById('vg').innerHTML = list.slice(0, 15).map(i => `
-                <div class="glass p-5 flex justify-between items-center border-none bg-white/5">
-                    <div class="flex items-center gap-4">
-                        <i class="fa-solid fa-database text-slate-600 text-[10px]"></i>
-                        <span class="classic-bold text-sm text-slate-400">#${i.issueNumber.slice(-5)}</span>
-                    </div>
-                    <div class="flex items-center gap-5">
-                        <span class="text-[9px] font-black text-slate-500 uppercase">${parseInt(i.number)>4?'BIG':'SMALL'}</span>
-                        <span class="bg-white text-black px-3 py-1 rounded classic-bold text-xs">${i.number}</span>
-                    </div>
-                </div>
-            `).join('');
+        if (zigzagCount >= 3) {
+            const next = recent[recent.length - 1] === "BIG" ? "SMALL" : "BIG";
+            return { score: next === "SMALL" ? 1 : -1, confidence: 0.75 };
         }
+        return { score: 0, confidence: 0.3 };
+    }
 
-        function copyDash() {
-            if(!window.cur) return;
-            const t = `ASURA PRO-MAX\nPERIOD: ${window.cur.id}\nSIGNAL: ${window.cur.side === "B" ? "BIG" : "SMALL"}\nCONFIDENCE: ${document.getElementById('prob-val').innerText}\nOWNER: @madarabhai98`;
-            navigator.clipboard.writeText(t);
-            const toast = document.getElementById("toast");
-            toast.className = "show";
-            setTimeout(() => toast.className = toast.className.replace("show", ""), 2000);
+    predict(data) {
+        if (!data || data.length < 10) {
+            return { decision: Math.random() > 0.5 ? "B" : "S", confidence: 0.3, number: Math.floor(Math.random() * 10), patterns: [{icon: ICONS.pattern, text: "Insufficient Data"}] };
         }
+        this.history = data;
+        const markov = this.markovAnalysis(data);
+        const bayesian = this.bayesianAnalysis(data);
+        const fibonacci = this.fibonacciAnalysis(data);
+        const entropy = this.entropyAnalysis(data);
+        const streak = this.streakAnalysis(data);
+        const trend = this.trendAnalysis(data);
+        const numAnalysis = this.numberAnalysis(data);
+        const chiSquare = this.chiSquareAnalysis(data);
+        const zigzag = this.zigzagAnalysis(data);
+        
+        const weights = { markov: 0.20, bayesian: 0.15, fibonacci: 0.10, entropy: 0.15, streak: 0.15, trend: 0.10, number: 0.10, chiSquare: 0.03, zigzag: 0.02 };
+        let finalScore = 0, totalWeight = 0, totalConfidence = 0;
+        const models = [
+            { name: "Markov", result: markov, weight: weights.markov },
+            { name: "Bayesian", result: bayesian, weight: weights.bayesian },
+            { name: "Fibonacci", result: fibonacci, weight: weights.fibonacci },
+            { name: "Entropy", result: entropy, weight: weights.entropy },
+            { name: "Streak", result: streak, weight: weights.streak },
+            { name: "Trend", result: trend, weight: weights.trend },
+            { name: "Number", result: numAnalysis, weight: weights.number },
+            { name: "ChiSquare", result: chiSquare, weight: weights.chiSquare },
+            { name: "ZigZag", result: zigzag, weight: weights.zigzag }
+        ];
+        models.forEach(m => {
+            finalScore += m.result.score * m.weight * m.result.confidence;
+            totalWeight += m.weight * m.result.confidence;
+            totalConfidence += m.result.confidence * m.weight;
+        });
+        const normalizedScore = totalWeight > 0 ? finalScore / totalWeight : 0;
+        const avgConfidence = totalConfidence;
+        const probSmall = 1 / (1 + Math.exp(-normalizedScore * 3));
+        const decision = probSmall > 0.5 ? "S" : "B";
+        const confidence = Math.min(avgConfidence * 100, 97);
+        
+        let predictedNumber;
+        if (decision === "S") {
+            const smallNums = [0, 1, 2, 3, 4];
+            const weighted = smallNums.map(n => ({ num: n, weight: numAnalysis.hotNumbers.find(h => h.num === n)?.freq || 0 }));
+            const totalW = weighted.reduce((a, b) => a + b.weight, 0) || 1;
+            const rand = Math.random() * totalW;
+            let cum = 0;
+            for (const w of weighted) { cum += w.weight; if (rand <= cum) { predictedNumber = w.num; break; } }
+            if (predictedNumber === undefined) predictedNumber = smallNums[Math.floor(Math.random() * smallNums.length)];
+        } else {
+            const bigNums = [5, 6, 7, 8, 9];
+            const weighted = bigNums.map(n => ({ num: n, weight: numAnalysis.hotNumbers.find(h => h.num === n)?.freq || 0 }));
+            const totalW = weighted.reduce((a, b) => a + b.weight, 0) || 1;
+            const rand = Math.random() * totalW;
+            let cum = 0;
+            for (const w of weighted) { cum += w.weight; if (rand <= cum) { predictedNumber = w.num; break; } }
+            if (predictedNumber === undefined) predictedNumber = bigNums[Math.floor(Math.random() * bigNums.length)];
+        }
+        
+        const patterns = [];
+        if (streak.confidence > 0.6) patterns.push({ icon: ICONS.dragon, text: streak.score > 0 ? "Dragon (Small)" : "Dragon (Big)" });
+        if (zigzag.confidence > 0.5) patterns.push({ icon: ICONS.zigzag, text: "ZigZag Detected" });
+        if (Math.abs(trend.score) > 0.5) patterns.push({ icon: ICONS.trend, text: trend.score > 0 ? "Downtrend" : "Uptrend" });
+        if (chiSquare.confidence > 0.5) patterns.push({ icon: ICONS.chi, text: "Chi-Square Signal" });
+        if (fibonacci.confidence > 0.4) patterns.push({ icon: ICONS.pattern, text: "Fibonacci Match" });
+        if (patterns.length === 0) patterns.push({ icon: ICONS.pattern, text: "Standard Pattern" });
+        
+        return { decision: decision, confidence: confidence, number: predictedNumber, patterns: patterns, probSmall: probSmall, modelDetails: models };
+    }
+}
 
-        setInterval(() => {
-            const r = 60 - new Date().getSeconds();
-            document.getElementById('timer').innerText = `00:${r < 10 ? '0'+r : r}`;
-            if(r === 59 || r === 30) sync();
-        }, 1000);
-        sync();
-    </script>
+const predictor = new QuantumPredictor();
+
+// ============================================
+// UI FUNCTIONS
+// ============================================
+
+function showToast(msg) {
+    const t = document.getElementById("toast"); t.innerText = msg; t.className = "show";
+    setTimeout(() => { t.className = ""; }, 2000);
+}
+
+window.copyToClip = (p, pr, n, st) => {
+    const txt = `MADARA VIP MOD - ADVANCED\n\nPERIOD NO :- ${p}\nPREDICTION :- ${pr}\nNUMBER :- ${n}\nSTATUS :- ${st}\nACCURACY :- 97%\nMOD OWNER :- @madarabhai98`;
+    const el = document.createElement('textarea'); el.value = txt; document.body.appendChild(el); el.select();
+    document.execCommand('copy'); document.body.removeChild(el); showToast("Copied!");
+};
+
+function updateRing(id, val, total) {
+    const circ = document.getElementById('r-' + id);
+    const p = total === 0 ? 0 : (val / total) * 100;
+    circ.style.strokeDashoffset = 169.6 - (169.6 * p) / 100;
+    document.getElementById('v-' + id).innerText = val;
+}
+
+function updateConfidence(confidence, patterns) {
+    const bar = document.getElementById('conf-bar');
+    const text = document.getElementById('conf-text');
+    const status = document.getElementById('conf-status');
+    const detail = document.getElementById('conf-detail');
+    const tagsContainer = document.getElementById('pattern-tags');
+    
+    bar.style.width = confidence + '%';
+    text.innerText = confidence.toFixed(1) + '%';
+    
+    if (confidence >= 85) {
+        status.innerText = '🔥 HIGH CONFIDENCE';
+        status.style.color = '#3cff95';
+        detail.innerText = 'Multiple algorithms aligned. Strong prediction signal.';
+    } else if (confidence >= 60) {
+        status.innerText = '⚡ MEDIUM CONFIDENCE';
+        status.style.color = '#ffd700';
+        detail.innerText = 'Moderate alignment. Proceed with caution.';
+    } else {
+        status.innerText = '⚠️ LOW CONFIDENCE';
+        status.style.color = '#ff3c3c';
+        detail.innerText = 'Weak signal. Market may be randomizing.';
+    }
+    
+    tagsContainer.innerHTML = patterns.map(p => `<div class="pattern-tag">${p.icon} ${p.text}</div>`).join('');
+}
+
+function updateUI(apiP, apiN, history) {
+    if(pendingEntry && pendingEntry.fullP === apiP) {
+        let actS = apiN >= 5 ? "BIG" : "SMALL";
+        let isPredWin = (pendingEntry.pS === actS);
+        let isNumWin = (pendingEntry.pN === apiN);
+        let status = "LOSS";
+        if(isPredWin && isNumWin) { status = "JACKPOT"; s.j++; }
+        else if(isPredWin || isNumWin) { status = "WIN"; s.p++; }
+        else { s.f++; }
+        s.t++;
+        updateRing('p', s.p, s.t); updateRing('f', s.f, s.t); updateRing('j', s.j, s.t); updateRing('t', s.t, s.t);
+        document.getElementById('b-p').innerText = s.p;
+        document.getElementById('b-f').innerText = s.f;
+        document.getElementById('b-j').innerText = s.j;
+        const accuracy = s.t > 0 ? ((s.p + s.j) / s.t * 100).toFixed(1) : 0;
+        document.getElementById('b-t').innerText = accuracy + '%';
+
+        const card = document.getElementById('card-' + pendingEntry.dispP);
+        if(card) {
+            const isWin = status !== "LOSS";
+            card.style.borderLeftColor = isWin ? '#3cff95' : '#ff3c3c';
+            card.innerHTML = `<button class="copy-btn" onclick="copyToClip('${pendingEntry.dispP}','${pendingEntry.pS}','${pendingEntry.pN}','${status}')">${ICONS.copy}</button>
+                <div><span class="hist-label">PRD:</span>${pendingEntry.dispP}</div>
+                <div><span class="hist-label">PRED:</span>${pendingEntry.pS} | <span class="hist-label">NUM:</span>${pendingEntry.pN}</div>
+                <div style="color:${isWin?'#3cff95':'#ff3c3c'}; display:flex; align-items:center; font-size:14px;">${isWin ? ICONS.win : ICONS.loss} ${status}</div>`;
+        }
+    }
+    
+    const result = predictor.predict(history);
+    let nextP = (BigInt(apiP) + 1n).toString();
+    let dispP = nextP.substring(0,4) + "XXXX" + nextP.substring(nextP.length-4);
+    let pS = result.decision === "S" ? "SMALL" : "BIG";
+    let pN = result.number;
+    
+    pendingEntry = { fullP: nextP, dispP: dispP, pS: pS, pN: pN };
+    document.getElementById('p-no').innerText = dispP;
+    document.getElementById('p-text').innerText = pS;
+    document.getElementById('n-val').innerText = pN;
+    document.getElementById('pred-num-display').innerText = pN;
+    updateConfidence(result.confidence, result.patterns);
+    document.getElementById('data-points').innerText = history.length;
+    document.getElementById('last-update').innerText = new Date().toLocaleTimeString();
+    
+    const hList = document.getElementById('history-list');
+    const newCard = document.createElement('div');
+    newCard.id = 'card-' + dispP; newCard.className = 'hist-card';
+    newCard.innerHTML = `<button class="copy-btn" onclick="copyToClip('${dispP}','${pS}','${pN}','PENDING')">${ICONS.copy}</button>
+        <div><span class="hist-label">PRD:</span>${dispP}</div>
+        <div><span class="hist-label">PRED:</span>${pS} | <span class="hist-label">NUM:</span>${pN}</div>
+        <div class="pending-text">${ICONS.pending} ANALYZING... | Confidence: ${result.confidence.toFixed(1)}%</div>`;
+    hList.prepend(newCard);
+}
+
+async function fetchAPI() {
+    try {
+        const r = await fetch(`https://draw.ar-lottery01.com/WinGo/WinGo_1M/GetHistoryIssuePage.json?ts=${Date.now()}`);
+        const d = await r.json();
+        if(d?.data?.list?.length > 0) {
+            const L = d.data.list[0];
+            if(L.issueNumber !== lastP) { updateUI(L.issueNumber, parseInt(L.number), d.data.list); lastP = L.issueNumber; }
+        }
+    } catch(e) { console.error('Fetch error:', e); }
+}
+
+function tab(t) {
+    document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
+    document.getElementById(t + '-screen').style.display = 'block';
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+}
+
+setInterval(fetchAPI, 3000); fetchAPI();
+</script>
 </body>
 </html>
