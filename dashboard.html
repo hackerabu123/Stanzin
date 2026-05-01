@@ -88,7 +88,7 @@ body { margin: 0; background: #050505; font-family: system-ui; color: white; fon
 .pattern-box { background: #121212; border-radius: 15px; padding: 12px; margin-bottom: 10px; border: 1px solid rgba(255,215,0,0.3); }
 .pattern-title { font-size: 11px; color: #ffd700; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
 .pattern-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-.pattern-tag { background: rgba(255,215,0,0.1); color: #ffd700; padding: 4px 10px; border-radius: 10px; font-size: 10px; border: 1px solid rgba(255,215,0,0.3); display: flex; align-items: center; gap: 4px; }
+.pattern-tag { background: rgba(255,215,0,0.1); color: #ffd700; padding: 4px 10px; border-radius: 10px; font-size: 10px; border: 1px solid rgba(255,215,0,0.3); }
 
 /* NAV */
 .nav { position: fixed; bottom: 0; width: 100%; background: linear-gradient(180deg, #d7ccff, #c4b5ff); display: flex; justify-content: space-around; padding: 12px 0; border-top-left-radius: 25px; border-top-right-radius: 25px; z-index: 1000; box-shadow: 0 -5px 20px rgba(124,104,255,0.2); }
@@ -119,7 +119,6 @@ body { margin: 0; background: #050505; font-family: system-ui; color: white; fon
 .icon-copy { fill: #7c68ff; }
 .icon-pattern { fill: #ffd700; }
 </style>
-<base target="_blank">
 </head>
 
 <body>
@@ -147,9 +146,9 @@ body { margin: 0; background: #050505; font-family: system-ui; color: white; fon
         <div class="compact-box"><div>PERIOD NO</div><div style="margin-left:auto; color:#7c68ff;" id="p-no">...</div></div>
         <div class="compact-box"><div>PREDICTION</div><div class="val-small" id="p-text">WAIT</div></div>
         <div class="compact-box"><div>NUMBER</div><div class="val-small" id="n-val">?</div></div>
-        
+
         <div class="pred-number" id="pred-num-display">--</div>
-        
+
         <!-- Pattern Detection -->
         <div class="pattern-box">
             <div class="pattern-title">
@@ -221,7 +220,7 @@ body { margin: 0; background: #050505; font-family: system-ui; color: white; fon
         </svg>
         <span class="nav-label">HOME</span>
     </div>
-    
+
     <!-- GAME BUTTON - Dice/Casino Style -->
     <div class="nav-item" onclick="tab('game')">
         <svg class="icon-game" viewBox="0 0 24 24">
@@ -238,7 +237,7 @@ body { margin: 0; background: #050505; font-family: system-ui; color: white; fon
         </svg>
         <span class="nav-label">PLAY</span>
     </div>
-    
+
     <!-- HISTORY BUTTON - Analytics/Chart Style -->
     <div class="nav-item" onclick="tab('history')">
         <svg class="icon-history" viewBox="0 0 24 24">
@@ -273,37 +272,37 @@ let historyCache = [];
 const ICONS = {
     // Home - Crown Shield
     home: `<svg class="icon-home" viewBox="0 0 24 24"><path d="M12 2L2 9v2h20V9L12 2z"/><path d="M4 11v9a2 2 0 002 2h12a2 2 0 002-2v-9"/><path d="M9 22v-6h6v6"/><circle cx="12" cy="6" r="1.5"/><circle cx="6" cy="9" r="1"/><circle cx="18" cy="9" r="1"/></svg>`,
-    
+
     // Game - Dice
     game: `<svg class="icon-game" viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="13" y="13" width="8" height="8" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="7" cy="7" r="1"/><circle cx="15" cy="15" r="1"/><circle cx="19" cy="19" r="1"/><path d="M11 7L13 13" stroke="currentColor" stroke-width="1" stroke-dasharray="2,2" opacity="0.5"/></svg>`,
-    
+
     // History - Chart
     history: `<svg class="icon-history" viewBox="0 0 24 24"><path d="M3 3v18h18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><rect x="6" y="14" width="3" height="4" rx="0.5"/><rect x="11" y="10" width="3" height="8" rx="0.5"/><rect x="16" y="6" width="3" height="12" rx="0.5"/><path d="M7 12l4-3 4-2 3-2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M18 5l-1 1 1-1 1 1"/></svg>`,
-    
+
     // Win - Trophy with Star
     win: `<svg class="st-icon win-trophy" viewBox="0 0 24 24"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v3c0 2.55 1.92 4.63 4.39 4.94A5.01 5.01 0 0 0 11 15.9V19H7v2h10v-2h-4v-3.1a5.01 5.01 0 0 0 3.61-1.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"/><path d="M12 2l1.5 3L17 6l-2.5 2L15 11l-3-2-3 2 0.5-3L7 6l3.5-1z" fill="#ffd700" opacity="0.8"/></svg>`,
-    
-    // Loss - X with Circle
+
+    // Loss - X with Cross
     loss: `<svg class="st-icon loss-x" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 8l8 8M16 8l-8 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`,
-    
+
     // Copy - Documents
     copy: `<svg class="icon-copy" viewBox="0 0 24 24"><rect x="6" y="4" width="12" height="15" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M9 7h6M9 10h6M9 13h4" stroke="currentColor" stroke-width="1" stroke-linecap="round"/><path d="M16 1H4a2 2 0 00-2 2v14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`,
-    
+
     // Pattern - Crystal Ball
     pattern: `<svg class="icon-pattern" width="16" height="16" viewBox="0 0 24 24"><circle cx="12" cy="11" r="8" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M12 19v3M8 22h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="11" r="3" fill="currentColor" opacity="0.3"/><path d="M12 6V4M8 7L7 5M16 7l1-2" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.5"/></svg>`,
-    
+
     // Pending - Loading Spinner
     pending: `<svg class="st-icon" viewBox="0 0 24 24" style="animation: spin 1s linear infinite"><circle cx="12" cy="12" r="10" fill="none" stroke="#ffd700" stroke-width="2" stroke-dasharray="30 10"/></svg>`,
-    
+
     // Dragon - Fire
     dragon: `<svg width="14" height="14" viewBox="0 0 24 24"><path d="M12 2C6 2 2 6 2 12s4 10 10 10 10-4 10-10" fill="none" stroke="#ff6b35" stroke-width="2"/><path d="M12 6c-2 2-4 5-4 8s2 4 4 4" fill="none" stroke="#ff6b35" stroke-width="1.5"/><circle cx="12" cy="14" r="2" fill="#ff6b35"/></svg>`,
-    
+
     // ZigZag - Lightning
     zigzag: `<svg width="14" height="14" viewBox="0 0 24 24"><path d="M13 2L4 14h6l-2 8 9-12h-6l2-8z" fill="#ffd700" stroke="#ffd700" stroke-width="1"/></svg>`,
-    
+
     // Trend - Arrow
     trend: `<svg width="14" height="14" viewBox="0 0 24 24"><path d="M7 17l5-5 5 5M12 12V3" fill="none" stroke="#3cff95" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-    
+
     // Chi-Square - Math Symbol
     chi: `<svg width="14" height="14" viewBox="0 0 24 24"><path d="M6 6l4 12M14 6l4 12M8 10h4M12 14h4" fill="none" stroke="#7c68ff" stroke-width="1.5" stroke-linecap="round"/></svg>`
 };
@@ -326,7 +325,7 @@ class QuantumPredictor {
         if (data.length < 15) return { score: 0, confidence: 0.3 };
         const outcomes = data.map(h => parseInt(h.number) >= 5 ? "BIG" : "SMALL").reverse();
         let totalScore = 0, totalWeight = 0;
-        
+
         const order1 = {};
         for (let i = 1; i < outcomes.length; i++) {
             const prev = outcomes[i-1];
@@ -339,7 +338,7 @@ class QuantumPredictor {
             const sum = b + s;
             if (sum > 0) { totalScore += ((s - b) / sum) * 1.5; totalWeight += 1.5; }
         }
-        
+
         const order2 = {};
         for (let i = 2; i < outcomes.length; i++) {
             const state = outcomes[i-2] + "_" + outcomes[i-1];
@@ -352,7 +351,7 @@ class QuantumPredictor {
             const sum = b + s;
             if (sum > 0) { totalScore += ((s - b) / sum) * 2.5; totalWeight += 2.5; }
         }
-        
+
         const order3 = {};
         for (let i = 3; i < outcomes.length; i++) {
             const state = outcomes[i-3] + "_" + outcomes[i-2] + "_" + outcomes[i-1];
@@ -365,7 +364,7 @@ class QuantumPredictor {
             const sum = b + s;
             if (sum > 0) { totalScore += ((s - b) / sum) * 3.5; totalWeight += 3.5; }
         }
-        
+
         return { score: totalWeight > 0 ? totalScore / totalWeight : 0, confidence: Math.min(totalWeight / 7.5, 0.95) };
     }
 
@@ -537,7 +536,7 @@ class QuantumPredictor {
 
     predict(data) {
         if (!data || data.length < 10) {
-            return { decision: Math.random() > 0.5 ? "B" : "S", confidence: 0.3, number: Math.floor(Math.random() * 10), patterns: [{icon: ICONS.pattern, text: "Insufficient Data"}] };
+            return { decision: Math.random() > 0.5 ? "B" : "S", confidence: 0.3, number: Math.floor(Math.random() * 10), patterns: ["Insufficient Data"] };
         }
         this.history = data;
         const markov = this.markovAnalysis(data);
@@ -549,7 +548,7 @@ class QuantumPredictor {
         const numAnalysis = this.numberAnalysis(data);
         const chiSquare = this.chiSquareAnalysis(data);
         const zigzag = this.zigzagAnalysis(data);
-        
+
         const weights = { markov: 0.20, bayesian: 0.15, fibonacci: 0.10, entropy: 0.15, streak: 0.15, trend: 0.10, number: 0.10, chiSquare: 0.03, zigzag: 0.02 };
         let finalScore = 0, totalWeight = 0, totalConfidence = 0;
         const models = [
@@ -573,7 +572,7 @@ class QuantumPredictor {
         const probSmall = 1 / (1 + Math.exp(-normalizedScore * 3));
         const decision = probSmall > 0.5 ? "S" : "B";
         const confidence = Math.min(avgConfidence * 100, 97);
-        
+
         let predictedNumber;
         if (decision === "S") {
             const smallNums = [0, 1, 2, 3, 4];
@@ -592,7 +591,7 @@ class QuantumPredictor {
             for (const w of weighted) { cum += w.weight; if (rand <= cum) { predictedNumber = w.num; break; } }
             if (predictedNumber === undefined) predictedNumber = bigNums[Math.floor(Math.random() * bigNums.length)];
         }
-        
+
         const patterns = [];
         if (streak.confidence > 0.6) patterns.push({ icon: ICONS.dragon, text: streak.score > 0 ? "Dragon (Small)" : "Dragon (Big)" });
         if (zigzag.confidence > 0.5) patterns.push({ icon: ICONS.zigzag, text: "ZigZag Detected" });
@@ -600,7 +599,7 @@ class QuantumPredictor {
         if (chiSquare.confidence > 0.5) patterns.push({ icon: ICONS.chi, text: "Chi-Square Signal" });
         if (fibonacci.confidence > 0.4) patterns.push({ icon: ICONS.pattern, text: "Fibonacci Match" });
         if (patterns.length === 0) patterns.push({ icon: ICONS.pattern, text: "Standard Pattern" });
-        
+
         return { decision: decision, confidence: confidence, number: predictedNumber, patterns: patterns, probSmall: probSmall, modelDetails: models };
     }
 }
@@ -617,7 +616,14 @@ function showToast(msg) {
 }
 
 window.copyToClip = (p, pr, n, st) => {
-    const txt = `MADARA VIP MOD - ADVANCED\n\nPERIOD NO :- ${p}\nPREDICTION :- ${pr}\nNUMBER :- ${n}\nSTATUS :- ${st}\nACCURACY :- 97%\nMOD OWNER :- @madarabhai98`;
+    const txt = `MADARA VIP MOD - ADVANCED
+
+PERIOD NO :- ${p}
+PREDICTION :- ${pr}
+NUMBER :- ${n}
+STATUS :- ${st}
+ACCURACY :- 97%
+MOD OWNER :- @madarabhai98`;
     const el = document.createElement('textarea'); el.value = txt; document.body.appendChild(el); el.select();
     document.execCommand('copy'); document.body.removeChild(el); showToast("Copied!");
 };
@@ -635,10 +641,10 @@ function updateConfidence(confidence, patterns) {
     const status = document.getElementById('conf-status');
     const detail = document.getElementById('conf-detail');
     const tagsContainer = document.getElementById('pattern-tags');
-    
+
     bar.style.width = confidence + '%';
     text.innerText = confidence.toFixed(1) + '%';
-    
+
     if (confidence >= 85) {
         status.innerText = '🔥 HIGH CONFIDENCE';
         status.style.color = '#3cff95';
@@ -652,7 +658,7 @@ function updateConfidence(confidence, patterns) {
         status.style.color = '#ff3c3c';
         detail.innerText = 'Weak signal. Market may be randomizing.';
     }
-    
+
     tagsContainer.innerHTML = patterns.map(p => `<div class="pattern-tag">${p.icon} ${p.text}</div>`).join('');
 }
 
@@ -683,13 +689,13 @@ function updateUI(apiP, apiN, history) {
                 <div style="color:${isWin?'#3cff95':'#ff3c3c'}; display:flex; align-items:center; font-size:14px;">${isWin ? ICONS.win : ICONS.loss} ${status}</div>`;
         }
     }
-    
+
     const result = predictor.predict(history);
     let nextP = (BigInt(apiP) + 1n).toString();
     let dispP = nextP.substring(0,4) + "XXXX" + nextP.substring(nextP.length-4);
     let pS = result.decision === "S" ? "SMALL" : "BIG";
     let pN = result.number;
-    
+
     pendingEntry = { fullP: nextP, dispP: dispP, pS: pS, pN: pN };
     document.getElementById('p-no').innerText = dispP;
     document.getElementById('p-text').innerText = pS;
@@ -698,7 +704,7 @@ function updateUI(apiP, apiN, history) {
     updateConfidence(result.confidence, result.patterns);
     document.getElementById('data-points').innerText = history.length;
     document.getElementById('last-update').innerText = new Date().toLocaleTimeString();
-    
+
     const hList = document.getElementById('history-list');
     const newCard = document.createElement('div');
     newCard.id = 'card-' + dispP; newCard.className = 'hist-card';
